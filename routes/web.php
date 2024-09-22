@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ProductManagementController;
 use App\Http\Controllers\ServiceManagementController;
 use Illuminate\Support\Facades\Route;
 
@@ -24,13 +25,16 @@ Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('l
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/service-management', [ServiceManagementController::class, 'index'])->name('admin.service-management');
-    Route::post('/services', [ServiceManagementController::class, 'store'])->name('services.store');
+
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    
+    Route::get('/services-management', [ServiceManagementController::class, 'index'])->name('admin.service-management');
     Route::get('/services/data', [ServiceManagementController::class, 'getData']);
-    Route::put('/services/update/{id}', [ServiceManagementController::class, 'update']);
-    Route::delete('/services/delete/{id}', [ServiceManagementController::class, 'destroy']);
+    Route::resource('services', ServiceManagementController::class)->except(['create', 'edit']);
+
+    Route::get('/products-management', [ProductManagementController::class, 'index'])->name('admin.product-management');
+    Route::get('/products/data', [ProductManagementController::class, 'getData']);
+    Route::resource('products', ProductManagementController::class)->except(['create', 'edit']);
+    
 });
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-});
