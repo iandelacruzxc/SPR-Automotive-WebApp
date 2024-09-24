@@ -29,8 +29,8 @@ Route::middleware(['auth'])->group(function () {
   Route::get('/services/data', [ServiceManagementController::class, 'getData']);
   Route::resource('services', ServiceManagementController::class)->except(['create', 'edit']);
 
-  Route::get('/products-management', [ProductManagementController::class, 'index'])->name('admin.product-management');
-  Route::get('/products/data', [ProductManagementController::class, 'getData']);
+  // Route::get('/products-management', [ProductManagementController::class, 'index'])->name('admin.product-management');
+  // Route::get('/products/data', [ProductManagementController::class, 'getData']);
   Route::resource('products', ProductManagementController::class)->except(['create', 'edit']);
 
   Route::get('/mechanics', [MechanicController::class, 'index'])->name('admin.mechanics');
