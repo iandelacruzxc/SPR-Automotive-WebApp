@@ -92,12 +92,13 @@ $(document).ready(function() {
             contentType: false, // Prevent jQuery from setting the content-type header
             processData: false, // Prevent jQuery from processing the data
             success: function(response) {
+                $('#createModal').hide();
                 Swal.fire({
                     icon: 'success',
                     title: serviceId ? 'Updated!' : 'Added!',
                     text: serviceId ? 'The service has been updated successfully.' : 'The service has been added successfully.'
                 }).then(() => {
-                    $('#createModal').addClass('hidden');
+                    // $('#createModal').addClass('hidden');
                     $('#createServiceForm')[0].reset();
                     table.ajax.reload(); // Reload the DataTable with new data
                 });

@@ -59,7 +59,7 @@
                             <div class="flex flex-col justify-center">
                                 <div class="font-bold text-xl text-gray-800 mb-1 text-center">Product List</div>
                                 <div class="text-gray-700 text-3xl font-bold mb-2">
-                                    {{ $totalProducts }} <!-- Display total services -->
+                                    <!-- {{ $totalProducts }} Display total services -->
                                 </div>
                             </div>
                         </div>

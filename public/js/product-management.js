@@ -178,12 +178,14 @@ $(document).ready(function() {
             contentType: false, // Prevent jQuery from setting the content-type header
             processData: false, // Prevent jQuery from processing the data
             success: function(response) {
+                $('#createModal').hide();
                 Swal.fire({
                     icon: 'success',
                     title: productId ? 'Updated!' : 'Created!',
                     text: productId ? 'The product has been updated successfully.' : 'The product has been created successfully.'
                 }).then(() => {
-                    $('#createModal').addClass('hidden'); // Hide the modal
+                    // $('#createModal').addClass('hidden'); // Hide the modal
+                
                     $('#createProductForm')[0].reset(); // Reset the form
                     $('#imagePreview').addClass('hidden'); // Hide the image preview
                     table.ajax.reload(); // Reload the DataTable with new data

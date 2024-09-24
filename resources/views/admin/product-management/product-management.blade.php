@@ -7,6 +7,7 @@
 
     @include('admin.product-management.style')
 
+                      <!-- <span class="bg-red-700 text-white border border-red-700">121</span>// Updated Tailwind class for red background with a border -->
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -50,25 +51,25 @@
         <script src="{{ asset('js/product-management.js') }}"></script>
         <script>
        function previewImage(event) {
-    const file = event.target.files[0];
-    const preview = document.getElementById('imagePreview');
+        const file = event.target.files[0];
+        const preview = document.getElementById('imagePreview');
 
-    if (!file) {
-        // No file selected, ensure the preview is hidden
-        preview.src = '';
-        preview.classList.add('hidden');
-        return;
+        if (!file) {
+            // No file selected, ensure the preview is hidden
+            preview.src = '';
+            preview.classList.add('hidden');
+            return;
+        }
+
+        const reader = new FileReader();
+        
+        reader.onload = function () {
+            preview.src = reader.result;
+            preview.classList.remove('hidden');
+        };
+        
+        reader.readAsDataURL(file);
     }
-
-    const reader = new FileReader();
-    
-    reader.onload = function () {
-        preview.src = reader.result;
-        preview.classList.remove('hidden');
-    };
-    
-    reader.readAsDataURL(file);
-}
 
       </script>
     @endpush
