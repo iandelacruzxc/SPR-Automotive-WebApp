@@ -26,7 +26,7 @@
 
     <div class="min-h-screen bg-gray-100">
         @livewire('navigation-menu')
-
+        <span class="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-red-500 text-white hidden">Badge</span>
         <!-- Page Heading -->
         @if (isset($header))
             <header class="bg-white shadow">

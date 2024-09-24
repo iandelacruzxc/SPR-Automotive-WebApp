@@ -23,8 +23,11 @@
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link href="{{ route('admin.product-management') }}" :active="request()->routeIs('admin.product-management')">
                         {{ __('Products Management') }}
+                    </x-nav-link>
+                </div>
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link href="{{ route('admin.mechanics') }}" :active="request()->routeIs('admin.mechanics')">
-                        {{ __('Mechanics Management') }}
+                    {{ __('Mechanics Management') }}
                     </x-nav-link>
                 </div>
             </div>
@@ -168,6 +171,11 @@
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link href="{{ route('admin.service-management') }}" :active="request()->routeIs('admin.service-management')">
                 {{ __('Services Management') }}
+            </x-responsive-nav-link>
+        </div>
+        <div class="pt-2 pb-3 space-y-1">
+            <x-responsive-nav-link href="{{ route('admin.product-management') }}" :active="request()->routeIs('admin.product-management')">
+                {{ __('Products Management') }}
             </x-responsive-nav-link>
         </div>
         <div class="pt-2 pb-3 space-y-1">
