@@ -55,7 +55,7 @@
 
 <!-- Modal -->
 <div id="viewModal" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center hidden">
-    <div class="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
+    <div class="bg-white p-6 rounded-lg shadow-lg max-w-xl w-full"> <!-- This is where you change the size -->
         <h3 class="text-lg font-semibold mb-4">Product Details</h3>
         <div id="productDetails"></div>
         <div class="flex justify-end">
@@ -63,6 +63,7 @@
         </div>
     </div>
 </div>
+
 
 
 
