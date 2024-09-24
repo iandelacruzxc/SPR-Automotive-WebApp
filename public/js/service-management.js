@@ -57,28 +57,48 @@ $(document).ready(function() {
     $('#createServiceForm').on('submit', function(e) {
         e.preventDefault();
     
-        var formData = $(this).serialize();
-        var serviceId = $('#serviceId').val();
-        var url = serviceId ? '/services/update/' + serviceId : '/services';
-        var method = serviceId ? 'PUT' : 'POST';
+        // var formData = $(this).serialize();
+        // var serviceId = $('#serviceId').val();
+        // var url = serviceId ? '/services/update/' + serviceId : '/services';
+        // var method = serviceId ? 'PUT' : 'POST';
     
+        // $.ajaxSetup({
+        //     headers: {
+        //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //     }
+        // });
+
+        var serviceId = $('#serviceId').val();
+        var url = serviceId ? '/services/' + serviceId : '/services'; // URL for update or create
+        var method = serviceId ? 'POST' : 'POST'; // Using POST; _method will handle it
+        
+        var formData = new FormData(this); // Using FormData to include files
+    
+        if (serviceId) {
+            formData.append('_method', 'PUT'); // Laravel requires this for PUT requests
+        }
+
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
     
+
         $.ajax({
             url: url,
-            method: method,
+            method: method, // Change this to method
             data: formData,
+            contentType: false, // Prevent jQuery from setting the content-type header
+            processData: false, // Prevent jQuery from processing the data
             success: function(response) {
+                $('#createModal').hide();
                 Swal.fire({
                     icon: 'success',
                     title: serviceId ? 'Updated!' : 'Added!',
                     text: serviceId ? 'The service has been updated successfully.' : 'The service has been added successfully.'
                 }).then(() => {
-                    $('#createModal').addClass('hidden');
+                    // $('#createModal').addClass('hidden');
                     $('#createServiceForm')[0].reset();
                     table.ajax.reload(); // Reload the DataTable with new data
                 });
@@ -108,20 +128,20 @@ $(document).ready(function() {
     });
 
     // Handle view button click
-    $('#example').on('click', '.view', function() {
-        var rowData = table.row($(this).parents('tr')).data();
+    // $('#example').on('click', '.view', function() {
+    //     var rowData = table.row($(this).parents('tr')).data();
        
-        // Populate the modal with data
-        $('#serviceDetails').html(`
-            <p><strong>Name:</strong> ${rowData.name}</p>
-            <p><strong>Description:</strong> ${rowData.description}</p>
-            <p><strong>Price:</strong> ${rowData.price}</p>
-            <p><strong>Status:</strong> ${rowData.status ? 'Active' : 'Inactive'}</p>
-        `);
+    //     // Populate the modal with data
+    //     $('#serviceDetails').html(`
+    //         <p><strong>Name:</strong> ${rowData.name}</p>
+    //         <p><strong>Description:</strong> ${rowData.description}</p>
+    //         <p><strong>Price:</strong> ${rowData.price}</p>
+    //         <p><strong>Status:</strong> ${rowData.status ? 'Active' : 'Inactive'}</p>
+    //     `);
        
-        // Show the modal
-        $('#viewModal').removeClass('hidden');
-    });
+    //     // Show the modal
+    //     $('#viewModal').removeClass('hidden');
+    // });
 
     // Close the view modal
     $('#closeViewModal').on('click', function() {
@@ -175,7 +195,7 @@ $(document).ready(function() {
                     if (result.isConfirmed) {
                         // Proceed with the delete operation
                         $.ajax({
-                            url: '/services/delete/' + rowData.id, // Adjust URL as needed
+                            url: '/services/' + rowData.id, // Adjust URL as needed
                             type: 'DELETE',
                             data: {
                                 _token: $('meta[name="csrf-token"]').attr('content')
