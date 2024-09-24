@@ -4,7 +4,7 @@ $(document).ready(function() {
         "processing": true,
         "serverSide": true,
         "ajax": {
-            "url": "/products/data",
+            "url": "/products",
             "type": "GET" // Use GET method for fetching data
         },
         "columnDefs": [
