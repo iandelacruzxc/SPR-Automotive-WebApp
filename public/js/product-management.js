@@ -84,7 +84,7 @@ $(document).ready(function() {
                     $('#productDetails').html(`
                         <div class="flex items-center space-x-4">
                             <div class="flex-shrink-0">
-                                <img src="http://127.0.0.1:8000/storage/${rowData.image_path}" alt="Product Image" class="w-32 h-32 object-cover rounded-md">
+                                <img src="http://127.0.0.1:8000/storage/${rowData.image_path}" alt="Product Image" class="w-20 h-20 object-cover rounded-md"> <!-- Fixed size -->
                             </div>
                             <div>
                                 <p><strong>Name:</strong> ${rowData.name || 'N/A'}</p>
@@ -94,6 +94,8 @@ $(document).ready(function() {
                             </div>
                         </div>
                     `);
+                    
+                    
                     
                     $('#viewModal').removeClass('hidden'); // Show the modal
                 } else {
