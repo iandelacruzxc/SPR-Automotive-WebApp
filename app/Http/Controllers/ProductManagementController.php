@@ -63,56 +63,6 @@ class ProductManagementController extends Controller
 }
 
 
-
-    // public function getData(Request $request)
-    // {
-    //     // Fetching parameters
-    //     $draw = $request->input('draw');
-    //     $start = $request->input('start');
-    //     $length = $request->input('length');
-    //     $searchValue = $request->input('search.value');
-    //     $orderColumn = $request->input('order.0.column');
-    //     $orderDir = $request->input('order.0.dir');
-        
-    //     // Get the column names for ordering
-    //     $columns = ['name', 'description', 'price', 'status', 'image_path'];
-        
-    //     // Build the query
-    //     $query = Products::query();
-        
-    //     // Apply search filter if applicable
-    //     if ($searchValue) {
-    //         $query->where(function($q) use ($searchValue) {
-    //             $q->where('name', 'like', "%$searchValue%")
-    //               ->orWhere('description', 'like', "%$searchValue%")
-    //               ->orWhere('price', 'like', "%$searchValue%");
-    //         });
-    //     }
-        
-    //     // Get total records after filtering
-    //     $filteredCount = $query->count();
-        
-    //     // Apply sorting
-    //     if (isset($columns[$orderColumn])) {
-    //         $query->orderBy($columns[$orderColumn], $orderDir);
-    //     }
-        
-    //     // Apply pagination
-    //     $services = $query->skip($start)->take($length)->get();
-        
-    //     // Get total records before filtering
-    //     $totalCount = Products::count();
-        
-    //     // Prepare the response in the format DataTables expects
-    //     return response()->json([
-    //         'draw' => intval($draw),
-    //         'recordsTotal' => intval($totalCount),
-    //         'recordsFiltered' => intval($filteredCount),
-    //         'data' => $services
-    //     ]);
-    // }
-
-
     public function store(Request $request)
     {
          // Validate the incoming request data

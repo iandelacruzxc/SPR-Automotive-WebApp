@@ -16,4 +16,9 @@ class Products extends Model
         'status',
         'image_path',
     ];
+
+    public function inventory()
+    {
+        return $this->hasOne(Inventory::class, 'product_id');
+    }
 }
