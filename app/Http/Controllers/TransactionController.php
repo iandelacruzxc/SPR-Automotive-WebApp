@@ -2,6 +2,8 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Transaction;
+use Illuminate\Support\Facades\Auth;
+
 class TransactionController extends Controller
 {
   public function index(Request $request)
@@ -87,7 +89,7 @@ class TransactionController extends Controller
   {
     // Validate the request
     $validated = $request->validate([
-      'user_id' => 'required|numeric',
+      // 'user_id' => 'required|numeric',
       'mechanic_id' => 'required|numeric',
       'code' => 'required|string',
       'client_name' => 'required|string',
@@ -95,11 +97,12 @@ class TransactionController extends Controller
       'email' => 'required|string',
       'address' => 'required|string',
       'amount' => 'required',
-      'status' => 'required|in:1,2',
+      'status' => 'required',
     ]);
     // Create the new Transaction
     $transaction = Transaction::create([
-      'user_id' => $validated['user_id'],
+      // 'user_id' => $validated['user_id'],
+      'user_id' => Auth::user()->id,
       'mechanic_id' => $validated['mechanic_id'],
       'code' => $validated['code'],
       'client_name' => $validated['client_name'],
@@ -107,7 +110,7 @@ class TransactionController extends Controller
       'email' => $validated['email'],
       'address' => $validated['address'],
       'amount' => $validated['amount'],
-      'status' => $validated['status'] == '1' ? true : false, // Convert to boolean
+      'status' => $validated['status']
     ]);
     return response()->json(['success' => true]);
   }
@@ -115,7 +118,7 @@ class TransactionController extends Controller
   {
     // Validate and update existing Transaction
     $validatedData = $request->validate([
-      'user_id' => 'required|numeric',
+      // 'user_id' => 'required|numeric',
       'mechanic_id' => 'required|numeric',
       'code' => 'required|string',
       'client_name' => 'required|string',
@@ -123,7 +126,7 @@ class TransactionController extends Controller
       'email' => 'required|string',
       'address' => 'required|string',
       'amount' => 'required',
-      'status' => 'required|in:1,2',
+      'status' => 'required',
     ]);
     $transaction = Transaction::findOrFail($id);
     $transaction->update($validatedData);

@@ -15,24 +15,26 @@ $(document).ready(function () {
             { data: "mechanic" },
             { data: "code" },
             { data: "client_name" },
-            { data: "contact" },
-            { data: "email" },
-            { data: "address" },
+            // { data: "contact" },
+            // { data: "email" },
+            // { data: "address" },
             { data: "amount" },
+            { data: "created_at" },
             {
                 data: "status",
                 render: function (data) {
                     var statusText = "";
                     var statusClass = "";
 
-                    if (data == 1) {
-                        statusText = "Active";
-                        statusClass =
-                            "bg-green-500 text-white border border-green-700"; // Tailwind class for green background with a border
-                    } else if (data == 2) {
-                        statusText = "Inactive";
-                        statusClass =
-                            "bg-red-500 text-white border border-red-700"; // Tailwind class for red background with a border
+                    if (data == "Pending") {
+                        statusText = "Pending";
+                        statusClass = "bg-red-500 text-white";
+                    } else if (data == "Processing") {
+                        statusText = "Processing";
+                        statusClass = "bg-yellow-500 text-white";
+                    } else if (data == "Done") {
+                        statusText = "Done";
+                        statusClass = "bg-green-500 text-white";
                     }
                     return `<span class="inline-block px-3 py-1 rounded-full text-xs font-semibold ${statusClass}">${statusText}</span>`;
                 },
@@ -60,6 +62,22 @@ $(document).ready(function () {
             [10, 25, 50, -1],
             [10, 25, 50, "All"],
         ], // Page length options
+    });
+
+    $.ajax({
+        url: "/options", // Assuming this is the route to the controller method
+        method: "GET",
+        data: {
+            models: ["products", "mechanics"],
+        },
+        success: function (response) {
+            console.log(response);
+            // response.products will contain the products data
+            // response.mechanics will contain the mechanics data
+        },
+        error: function (error) {
+            console.log("Error:", error.responseJSON);
+        },
     });
 
     // Handle Form Submission
@@ -91,7 +109,7 @@ $(document).ready(function () {
             contentType: false, // Prevent jQuery from setting the content-type header
             processData: false, // Prevent jQuery from processing the data
             success: function (response) {
-                $("#createModal").addClass('hidden');
+                $("#createModal").addClass("hidden");
                 Swal.fire({
                     icon: "success",
                     title: transactionId ? "Updated!" : "Added!",
@@ -151,6 +169,7 @@ $(document).ready(function () {
         switch (true) {
             case action.includes("view"):
                 $("#transactionDetails").html(`
+                  <p><strong>Processed By:</strong> ${rowData.created_at}</p>
                   <p><strong>Processed By:</strong> ${rowData.processed_by}</p>
                   <p><strong>Mechanic:</strong> ${rowData.mechanic}</p>
                   <p><strong>Code:</strong> ${rowData.code}</p>
@@ -168,7 +187,7 @@ $(document).ready(function () {
             case action.includes("edit"):
                 $("#modalTitle").text("Edit Transaction");
                 $("#transactionId").val(rowData.id);
-                $("#user_id").val(rowData.user_id);
+                // $("#user_id").val(rowData.user_id);
                 $("#mechanic_id").val(rowData.mechanic_id);
                 $("#code").val(rowData.code);
                 $("#client_name").val(rowData.client_name);

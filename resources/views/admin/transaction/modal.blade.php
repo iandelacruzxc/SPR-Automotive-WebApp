@@ -6,11 +6,11 @@
               <div id="modalBody" class="h-[28rem] pl-4 overflow-y-scroll">
                   <input type="hidden" id="transactionId" name="transactionId">
                   <!-- Form fields as you have defined -->
-                  <div class="mb-4">
+                  {{-- <div class="mb-4">
                       <label for="user_id" class="block text-sm font-medium text-gray-700">Processed By</label>
                       <input type="text" id="user_id" name="user_id"
                           class="mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm" required>
-                  </div>
+                  </div> --}}
                   <div class="mb-4">
                       <label for="mechanic_id" class="block text-sm font-medium text-gray-700">Mechanic</label>
                       <input type="text" id="mechanic_id" name="mechanic_id"
@@ -50,9 +50,10 @@
                       <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
                       <select id="status" name="status"
                           class="mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm" required>
-                          <option value="1">Active</option>
-                          <option value="2">Inactive</option>
-                      </select>
+                          <option value="Pending" selected>Pending</option>
+                          <option value="Processing">Processing</option>
+                          <option value="Done">Done</option>
+                        </select>
                   </div>
               </div>
               <div class="flex justify-end border-t-1 pt-2">
