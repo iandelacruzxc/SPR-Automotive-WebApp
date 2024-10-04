@@ -4,7 +4,7 @@ $(document).ready(function() {
         "processing": true,
         "serverSide": true,
         "ajax": {
-            "url": "/products/data",
+            "url": "/products",
             "type": "GET" // Use GET method for fetching data
         },
         "columnDefs": [
@@ -178,7 +178,7 @@ $(document).ready(function() {
             contentType: false, // Prevent jQuery from setting the content-type header
             processData: false, // Prevent jQuery from processing the data
             success: function(response) {
-                $('#createModal').hide();
+                $('#createModal').addClass('hidden');
                 Swal.fire({
                     icon: 'success',
                     title: productId ? 'Updated!' : 'Created!',

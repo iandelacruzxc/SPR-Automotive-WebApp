@@ -9,14 +9,9 @@ use Illuminate\Support\Facades\Storage;
 
 class ProductManagementController extends Controller
 {
-    public function index()
-    {
-        return view('admin.product-management.product-management');
-    }
-
-
-    public function getData(Request $request)
-    {
+ public function index(Request $request)
+{
+    if ($request->ajax()) {
         // Fetching parameters
         $draw = $request->input('draw');
         $start = $request->input('start');
@@ -24,13 +19,13 @@ class ProductManagementController extends Controller
         $searchValue = $request->input('search.value');
         $orderColumn = $request->input('order.0.column');
         $orderDir = $request->input('order.0.dir');
-        
+
         // Get the column names for ordering
         $columns = ['name', 'description', 'price', 'status', 'image_path'];
-        
+
         // Build the query
         $query = Products::query();
-        
+
         // Apply search filter if applicable
         if ($searchValue) {
             $query->where(function($q) use ($searchValue) {
@@ -39,21 +34,21 @@ class ProductManagementController extends Controller
                   ->orWhere('price', 'like', "%$searchValue%");
             });
         }
-        
+
         // Get total records after filtering
         $filteredCount = $query->count();
-        
+
         // Apply sorting
         if (isset($columns[$orderColumn])) {
             $query->orderBy($columns[$orderColumn], $orderDir);
         }
-        
+
         // Apply pagination
         $services = $query->skip($start)->take($length)->get();
-        
+
         // Get total records before filtering
         $totalCount = Products::count();
-        
+
         // Prepare the response in the format DataTables expects
         return response()->json([
             'draw' => intval($draw),
@@ -62,6 +57,10 @@ class ProductManagementController extends Controller
             'data' => $services
         ]);
     }
+
+    // If not an AJAX request, return the view
+    return view('admin.product-management.product-management');
+}
 
 
     public function store(Request $request)

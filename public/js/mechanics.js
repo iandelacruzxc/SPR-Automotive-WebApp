@@ -22,11 +22,11 @@ $(document).ready(function () {
                     if (data == 1) {
                         statusText = "Active";
                         statusClass =
-                            "bg-green-900 text-green-100"; // Tailwind class for green background with a border
+                            "bg-green-500 text-white border border-green-700"; // Tailwind class for green background with a border
                     } else if (data == 2) {
                         statusText = "Inactive";
                         statusClass =
-                            "bg-red-900 text-red-100"; // Tailwind class for red background with a border
+                            "bg-red-500 text-white border border-red-700"; // Tailwind class for red background with a border
                     }
                     return `<span class="inline-block px-3 py-1 rounded-full text-xs font-semibold ${statusClass}">${statusText}</span>`;
                 },
@@ -35,10 +35,10 @@ $(document).ready(function () {
                 data: null,
                 defaultContent: `
                     <div class="flex space-x-2">
-                        <button class="view text-gray-500 hover:text-gray-700 mr-2" title="View">
+                        <button class="view text-blue-500 hover:text-blue-700 mr-2" title="View">
                             <i class="fas fa-eye"></i>
                         </button>
-                        <button class="edit text-green-500 hover:text-gray-700 mr-2" title="Edit">
+                        <button class="edit text-green-500 hover:text-red-700 mr-2" title="Edit">
                             <i class="fas fa-pencil-alt"></i>
                         </button>
                         <button class="delete text-red-600 hover:text-red-800" title="Delete">
