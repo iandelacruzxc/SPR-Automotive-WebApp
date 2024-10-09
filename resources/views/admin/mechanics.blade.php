@@ -59,6 +59,12 @@
                                     Lastname</th>
                                 <th
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Position</th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Rate</th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Status</th>
                                 <th
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -89,11 +95,21 @@
                 <div class="mb-4">
                     <label for="middlename" class="block text-sm font-medium text-gray-700">Middlename</label>
                     <input type="text" id="middlename" name="middlename"
-                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm" required>
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm">
                 </div>
                 <div class="mb-4">
                     <label for="lastname" class="block text-sm font-medium text-gray-700">Lastname</label>
                     <input type="text" id="lastname" name="lastname"
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm" required>
+                </div>
+                <div class="mb-4">
+                    <label for="position" class="block text-sm font-medium text-gray-700">Position</label>
+                    <input type="text" id="position" name="position"
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm" required>
+                </div>
+                <div class="mb-4">
+                    <label for="rate" class="block text-sm font-medium text-gray-700">Rate</label>
+                    <input type="number" id="rate" name="rate"
                         class="mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm" required>
                 </div>
                 <div class="mb-4">
