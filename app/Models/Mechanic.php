@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Mechanic extends Model
 {
-    use HasFactory;
-
-    protected $fillable = ['firstname', 'middlename', 'lastname', 'status', 'delete_flag'];
+  use HasFactory;
+  protected $fillable = ['firstname', 'middlename', 'lastname', 'status', 'position', 'rate', 'delete_flag'];
 }
