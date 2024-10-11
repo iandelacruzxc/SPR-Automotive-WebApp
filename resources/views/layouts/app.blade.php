@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -16,16 +17,17 @@
     <!-- Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="stylesheet" href="{{ asset('css/Datatables/datatables.css') }}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-
+    <link rel="stylesheet" href="{{ asset('css/Sweetalert2/sweetalert2.min.css') }}">
     @livewireStyles
 </head>
+
 <body class="font-sans antialiased">
     <x-banner />
 
     <div class="min-h-screen bg-gray-100">
         @livewire('navigation-menu')
-        <span class="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-red-500 text-white hidden">Badge</span>
+        <span
+            class="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-red-500 text-white hidden">Badge</span>
         <!-- Page Heading -->
         @if (isset($header))
             <header class="bg-white shadow">
@@ -55,13 +57,15 @@
 
     <!-- jQuery -->
     <script src="{{ asset('js/jquery.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Sweetalert2 -->
+    <script src="{{ asset('js/Sweetalert2/sweetalert2.js') }}"></script>
     <!-- DataTables JS -->
     <script src="{{ asset('js/Datatables/datatables.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+    {{-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script> --}}
     <script src="https://cdn.jsdelivr.net/npm/@heroicons/react@1.0.5/umd/index.min.js"></script>
 
     <!-- Additional Scripts -->
     @stack('scripts')
 </body>
+
 </html>
