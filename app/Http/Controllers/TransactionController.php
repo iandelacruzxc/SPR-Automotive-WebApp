@@ -1,7 +1,10 @@
 <?php
+
 namespace App\Http\Controllers;
+
 use Illuminate\Http\Request;
 use App\Models\Transaction;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class TransactionController extends Controller
@@ -22,6 +25,11 @@ class TransactionController extends Controller
         'mechanic_id',
         'code',
         'client_name',
+        'unit',
+        'plate_no',
+        'color',
+        'date_in',
+        'date_out',
         'contact',
         'email',
         'address',
@@ -34,16 +42,17 @@ class TransactionController extends Controller
       if ($searchValue) {
         $query->where(function ($q) use ($searchValue) {
           $q->whereHas('user', function ($q) use ($searchValue) {
-            $q->where('name', 'like', "%$searchValue%"); // Searching by user name
+            $q->where('name', 'like', "%$searchValue%"); // Search by user name
           })->orWhereHas('mechanic', function ($q) use ($searchValue) {
             $q->whereRaw("CONCAT(firstname, ' ', lastname) LIKE ?", ["%$searchValue%"]); // Search by full name of mechanic
           })
-            ->orWhere('code', 'like', "%$searchValue%")
             ->orWhere('client_name', 'like', "%$searchValue%")
-            ->orWhere('contact', 'like', "%$searchValue%")
-            ->orWhere('email', 'like', "%$searchValue%")
-            ->orWhere('address', 'like', "%$searchValue%")
+            ->orWhere('unit', 'like', "%$searchValue%")
+            ->orWhere('plate_no', 'like', "%$searchValue%")
+            ->orWhereRaw("CONCAT(unit, ' - ', color) LIKE ?", ["%$searchValue%"]) // Search by unit_color (unit - color)
+            ->orWhere('downpayment', 'like', "%$searchValue%")
             ->orWhere('amount', 'like', "%$searchValue%")
+            ->orWhereRaw("(amount - downpayment) LIKE ?", ["%$searchValue%"]) // Search by calculated balance
             ->orWhere('status', 'like', "%$searchValue%");
         });
       }
@@ -69,14 +78,24 @@ class TransactionController extends Controller
             : 'N/A';
           return [
             'id' => $transaction->id,
-            'processed_by' => $transaction->user->name ?? 'N/A',        // Get user name
-            'mechanic' => $mechanicFullName,
-            'code' => $transaction->code,
             'client_name' => $transaction->client_name,
+            'unit' => $transaction->unit,
+            'plate_no' => $transaction->plate_no,
+            'color' => $transaction->color,
             'contact' => $transaction->contact,
             'email' => $transaction->email,
             'address' => $transaction->address,
+            'unit_color' => "{$transaction->unit} - {$transaction->color}",
+
+            'code' => $transaction->code,
+            'processed_by' => $transaction->user->name ?? 'N/A',
+            'mechanic' => $mechanicFullName,
+            'mechanic_id' => $transaction->mechanic_id,
+            'downpayment' => $transaction->downpayment,
+            'balance' =>  $transaction->amount - $transaction->downpayment,
             'amount' => $transaction->amount,
+            'date_in' => $transaction->date_in,
+            'date_out' => $transaction->date_out ? $transaction->date_out : "--",
             'status' => $transaction->status,
             'created_at' => $transaction->created_at->format('Y-m-d H:i:s'),
           ];
@@ -89,28 +108,42 @@ class TransactionController extends Controller
   {
     // Validate the request
     $validated = $request->validate([
-      // 'user_id' => 'required|numeric',
-      'mechanic_id' => 'required|numeric',
-      'code' => 'required|string',
       'client_name' => 'required|string',
+      'unit' => 'required|string',
+      'plate_no' => 'required|string',
+      'color' => 'required|string',
       'contact' => 'required|string',
-      'email' => 'required|string',
+      'email' => 'required|email',
       'address' => 'required|string',
-      'amount' => 'required',
-      'status' => 'required',
+      'mechanic_id' => 'required|numeric',
+      'downpayment' => 'nullable|numeric',  // Validate downpayment as numeric
+      'date_in' => 'date',
+      'date_out' => 'date',
+      'code' => 'required|string',
+      'status' => 'required|string',
     ]);
+
+    // Format the downpayment to two decimal places (if it's provided)
+    $downpayment = $validated['downpayment'] !== null
+      ? number_format($validated['downpayment'], 2, '.', '')
+      : null;
     // Create the new Transaction
     $transaction = Transaction::create([
-      // 'user_id' => $validated['user_id'],
       'user_id' => Auth::user()->id,
-      'mechanic_id' => $validated['mechanic_id'],
-      'code' => $validated['code'],
       'client_name' => $validated['client_name'],
+      'unit' => $validated['unit'],
+      'plate_no' => $validated['plate_no'],
+      'color' => $validated['color'],
       'contact' => $validated['contact'],
       'email' => $validated['email'],
       'address' => $validated['address'],
-      'amount' => $validated['amount'],
-      'status' => $validated['status']
+      'code' => $validated['code'],
+      'mechanic_id' => $validated['mechanic_id'],
+      'downpayment' => $downpayment,  // Save downpayment with correct format
+      'date_in' => $validated['date_in'],
+      'date_out' => $validated['date_out'],
+      'amount' => 0,                  // You can adjust this logic as needed
+      'status' => $validated['status'],
     ]);
     return response()->json(['success' => true]);
   }
@@ -119,13 +152,20 @@ class TransactionController extends Controller
     // Validate and update existing Transaction
     $validatedData = $request->validate([
       // 'user_id' => 'required|numeric',
-      'mechanic_id' => 'required|numeric',
-      'code' => 'required|string',
       'client_name' => 'required|string',
+      'unit' => 'required|string',
+      'plate_no' => 'required|string',
+      'color' => 'required|string',
       'contact' => 'required|string',
       'email' => 'required|string',
       'address' => 'required|string',
-      'amount' => 'required',
+
+      'code' => 'required|string',
+      'mechanic_id' => 'required|numeric',
+      'downpayment' => 'decimal:2|nullable',
+      'date_in' => 'date|nullable',
+      'date_out' => 'date|nullable',
+      // 'amount' => 'required',
       'status' => 'required',
     ]);
     $transaction = Transaction::findOrFail($id);

@@ -11,11 +11,17 @@ class Transaction extends Model
       'mechanic_id',
       'code',
       'client_name',
+      'unit',
+      'plate_no',
+      'color',
       'contact',
       'email',
       'address',
       'amount',
-      'status'
+      'downpayment',
+      'date_in',
+      'date_out',
+      'status',
     ];
     
     // Define relationship to User (for the user who created the transaction)
