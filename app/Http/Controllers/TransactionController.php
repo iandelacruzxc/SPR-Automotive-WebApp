@@ -86,7 +86,6 @@ class TransactionController extends Controller
             'email' => $transaction->email,
             'address' => $transaction->address,
             'unit_color' => "{$transaction->unit} - {$transaction->color}",
-
             'code' => $transaction->code,
             'processed_by' => $transaction->user->name ?? 'N/A',
             'mechanic' => $mechanicFullName,
@@ -106,6 +105,8 @@ class TransactionController extends Controller
   }
   public function store(Request $request)
   {
+
+    $transactionCode = $this->generateTransactionCode();
     // Validate the request
     $validated = $request->validate([
       'client_name' => 'required|string',
@@ -119,7 +120,7 @@ class TransactionController extends Controller
       'downpayment' => 'nullable|numeric',  // Validate downpayment as numeric
       'date_in' => 'date',
       'date_out' => 'date',
-      'code' => 'required|string',
+      // 'code' => 'required|string',
       'status' => 'required|string',
     ]);
 
@@ -137,7 +138,7 @@ class TransactionController extends Controller
       'contact' => $validated['contact'],
       'email' => $validated['email'],
       'address' => $validated['address'],
-      'code' => $validated['code'],
+      'code' => $transactionCode,
       'mechanic_id' => $validated['mechanic_id'],
       'downpayment' => $downpayment,  // Save downpayment with correct format
       'date_in' => $validated['date_in'],
@@ -159,8 +160,7 @@ class TransactionController extends Controller
       'contact' => 'required|string',
       'email' => 'required|string',
       'address' => 'required|string',
-
-      'code' => 'required|string',
+      // 'code' => 'required|string',
       'mechanic_id' => 'required|numeric',
       'downpayment' => 'decimal:2|nullable',
       'date_in' => 'date|nullable',
@@ -178,5 +178,27 @@ class TransactionController extends Controller
     $transaction = Transaction::findOrFail($id);
     $transaction->delete();
     return response()->json(['success' => true]);
+  }
+
+  public function generateTransactionCode()
+  {
+    // Get current date in 'YYYYMMDD' format
+    $datePrefix = Carbon::now()->format('Ymd');
+
+    // Get the last transaction code for today, if it exists
+    $lastTransaction = Transaction::where('code', 'like', $datePrefix . '%')
+      ->orderBy('code', 'desc')
+      ->first();
+
+    // Determine the next sequence number
+    if ($lastTransaction) {
+      $lastSequence = (int)substr($lastTransaction->code, -3); // Get last 'xxx'
+      $nextSequence = str_pad($lastSequence + 1, 3, '0', STR_PAD_LEFT); // Increment and pad with zeroes
+    } else {
+      $nextSequence = '001'; // Start with '001' if no transactions for today
+    }
+
+    // Combine the date prefix and sequence number
+    return $datePrefix . $nextSequence;
   }
 }
