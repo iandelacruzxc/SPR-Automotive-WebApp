@@ -24,29 +24,14 @@
                     <table id="example" class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
-                                {{-- <th class="px-6 py-3 text-left text-xs text-gray-500 uppercase tracking-wider">
-                                    Code</th> --}}
+                                <th class="px-6 py-3 text-left text-xs text-gray-500 uppercase tracking-wider">
+                                    Code</th>
                                 <th class="px-6 py-3 text-left text-xs text-gray-500 uppercase tracking-wider">
                                     Client Name</th>
                                 <th class="px-6 py-3 text-left text-xs text-gray-500 uppercase tracking-wider">
                                     Unit</th>
                                 <th class="px-6 py-3 text-left text-xs text-gray-500 uppercase tracking-wider">
                                     Plate No.</th>
-                                {{-- <th class="px-6 py-3 text-left text-xs text-gray-500 uppercase tracking-wider">
-                                    Processed By</th>
-                                <th class="px-6 py-3 text-left text-xs text-gray-500 uppercase tracking-wider">
-                                    Mechanic</th>
-                                <th
-                                    class="px-6 py-3 text-left text-xs text-gray-500 uppercase tracking-wider">
-                                    Contact</th>
-                                <th
-                                    class="px-6 py-3 text-left text-xs text-gray-500 uppercase tracking-wider">
-                                    Email</th>
-                                <th
-                                    class="px-6 py-3 text-left text-xs text-gray-500 uppercase tracking-wider">
-                                    Address</th> --}}
-                                <th class="px-6 py-3 text-left text-xs text-gray-500 uppercase tracking-wider">
-                                    Downpayment</th>
                                 <th class="px-6 py-3 text-left text-xs text-gray-500 uppercase tracking-wider">
                                     Balance</th>
                                 <th class="px-6 py-3 text-left text-xs text-gray-500 uppercase tracking-wider">

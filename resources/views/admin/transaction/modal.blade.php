@@ -49,11 +49,11 @@
 
                     <div class="font-semibold mb-4">Transaction Details</div>
                     <div class="grid grid-cols-2 gap-2 mb-4">
-                        <div class="col-span-2">
+                        {{-- <div class="col-span-2">
                             <label for="code" class="block text-sm text-gray-700">Transaction Code</label>
                             <input type="text" id="code" name="code"
-                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm" required>
-                        </div>
+                                class="mt-1 block w-full read-only:border-gray-300 rounded-md shadow-sm sm:text-sm" readonly>
+                        </div> --}}
                         <div class="">
                             <label for="mechanic_id" class="block text-sm text-gray-700">Mechanic</label>
                             <select id="mechanic_id" name="mechanic_id"

@@ -11,11 +11,11 @@ $(document).ready(function () {
             { className: "custom-align-left", targets: 2 }, // Apply custom alignment to the 'price' column (3rd column, zero-based index)
         ],
         columns: [
-            // { data: "code" },
+            { data: "code" },
             { data: "client_name" },
             { data: "unit_color" },
             { data: "plate_no" },
-            { data: "downpayment" },
+            // { data: "downpayment" },
             { data: "balance" },
             { data: "amount" },
             { data: "date_in" },
@@ -192,7 +192,6 @@ $(document).ready(function () {
                   <p><strong>Contact:</strong> ${rowData.contact}</p>
                   <p><strong>Email:</strong> ${rowData.email}</p>
                   <p><strong>Address:</strong> ${rowData.address}</p>
-                  
                   <p><strong>Code:</strong> ${rowData.code}</p>
                   <p><strong>Processed By:</strong> ${rowData.processed_by}</p>
                   <p><strong>Mechanic:</strong> ${rowData.mechanic}</p>
@@ -218,7 +217,7 @@ $(document).ready(function () {
                 $("#email").val(rowData.email);
                 $("#address").val(rowData.address);
 
-                $("#code").val(rowData.code);
+                // $("#code").val(rowData.code);
                 $("#mechanic_id").val(rowData.mechanic_id);
                 $("#downpayment").val(rowData.downpayment);
                 $("#date_in").val(rowData.date_in);
