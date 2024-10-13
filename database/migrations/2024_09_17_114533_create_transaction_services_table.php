@@ -13,6 +13,7 @@ return new class extends Migration
   {
     Schema::create('transaction_services', function (Blueprint $table) {
       $table->id(); // Primary key, auto-incrementing ID
+      $table->foreignId('transaction_id')->constrained('transactions')->onDelete('cascade');
       $table->foreignId('service_id')->constrained('services')->onDelete('cascade'); // Foreign key reference to service_list table
       $table->decimal('price', 10, 2); // Column for service price, with 2 decimal places
       $table->timestamps(); // Created at and updated at timestamps

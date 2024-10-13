@@ -23,7 +23,7 @@ class MechanicController extends Controller
     $orderDir = $request->input('order.0.dir');
 
     // Get the column names for ordering
-    $columns = ['firstname', 'middlename', 'lastname', 'status', 'delete_flag'];
+    $columns = ['firstname', 'middlename', 'lastname', 'status', 'position', 'rate', 'delete_flag'];
 
     // Build the query
     $query = Mechanic::query();
@@ -34,6 +34,8 @@ class MechanicController extends Controller
         $q->where('firstname', 'like', "%$searchValue%")
           ->orWhere('middlename', 'like', "%$searchValue%")
           ->orWhere('lastname', 'like', "%$searchValue%")
+          ->orWhere('position', 'like', "%$searchValue%")
+          ->orWhere('rate', 'like', "%$searchValue%")
           ->orWhere('status', 'like', "%$searchValue%");
       });
     }
@@ -66,8 +68,10 @@ class MechanicController extends Controller
     // Validate the request
     $validated = $request->validate([
       'firstname' => 'required|string|max:255',
-      'middlename' => 'required|string|max:255',
+      'middlename' => 'string|max:255|nullable',
       'lastname' => 'required|string|max:255',
+      'position' => 'required|string|max:100',
+      'rate' => 'required',
       'status' => 'required|in:1,2',
       // 'delete_flag' => 'required|in:1,2',
     ]);
@@ -77,6 +81,8 @@ class MechanicController extends Controller
       'firstname' => $validated['firstname'],
       'middlename' => $validated['middlename'],
       'lastname' => $validated['lastname'],
+      'position' => $validated['position'],
+      'rate' => $validated['rate'],
       'status' => $validated['status'] == '1' ? true : false, // Convert to boolean
       'delete_flag' => false, // Convert to boolean
     ]);
@@ -89,8 +95,10 @@ class MechanicController extends Controller
     // Validate and update existing mechanic
     $validatedData = $request->validate([
       'firstname' => 'required|string|max:255',
-      'middlename' => 'required|string|max:255',
+      'middlename' => 'string|max:255|nullable',
       'lastname' => 'required|string|max:255',
+      'position' => 'required|string|max:100',
+      'rate' => 'required',
       'status' => 'required|in:1,2',
       // 'delete_flag' => 'required|in:1,2',
     ]);

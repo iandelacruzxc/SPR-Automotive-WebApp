@@ -11,15 +11,15 @@ $(document).ready(function () {
             { className: "custom-align-left", targets: 2 }, // Apply custom alignment to the 'price' column (3rd column, zero-based index)
         ],
         columns: [
-            { data: "processed_by" },
-            { data: "mechanic" },
             { data: "code" },
             { data: "client_name" },
-            // { data: "contact" },
-            // { data: "email" },
-            // { data: "address" },
+            { data: "unit_color" },
+            { data: "plate_no" },
+            // { data: "downpayment" },
+            { data: "balance" },
             { data: "amount" },
-            { data: "created_at" },
+            { data: "date_in" },
+            { data: "date_out" },
             {
                 data: "status",
                 render: function (data) {
@@ -74,10 +74,26 @@ $(document).ready(function () {
             console.log(response);
             // response.products will contain the products data
             // response.mechanics will contain the mechanics data
+
+            var mechanicId = $("#mechanic_id");
+            var mechanicOptions = response.mechanics.map(function (item) {
+                return $("<option></option>")
+                    .attr("value", item.id)
+                    .text(item.fullname);
+            });
+            mechanicId.append(mechanicOptions); // Append all options at once
         },
         error: function (error) {
             console.log("Error:", error.responseJSON);
         },
+    });
+
+    $("#downpayment").on("blur", function () {
+        var downpaymentValue = parseFloat($(this).val());
+
+        if (!isNaN(downpaymentValue)) {
+            $(this).val(downpaymentValue.toFixed(2));
+        }
     });
 
     // Handle Form Submission
@@ -169,32 +185,43 @@ $(document).ready(function () {
         switch (true) {
             case action.includes("view"):
                 $("#transactionDetails").html(`
-                  <p><strong>Processed By:</strong> ${rowData.created_at}</p>
-                  <p><strong>Processed By:</strong> ${rowData.processed_by}</p>
-                  <p><strong>Mechanic:</strong> ${rowData.mechanic}</p>
-                  <p><strong>Code:</strong> ${rowData.code}</p>
                   <p><strong>Client Name:</strong> ${rowData.client_name}</p>
+                  <p><strong>Unit:</strong> ${rowData.unit}</p>
+                  <p><strong>Plate No.:</strong> ${rowData.plate_no}</p>
+                  <p><strong>Color:</strong> ${rowData.color}</p>
                   <p><strong>Contact:</strong> ${rowData.contact}</p>
                   <p><strong>Email:</strong> ${rowData.email}</p>
                   <p><strong>Address:</strong> ${rowData.address}</p>
+                  <p><strong>Code:</strong> ${rowData.code}</p>
+                  <p><strong>Processed By:</strong> ${rowData.processed_by}</p>
+                  <p><strong>Mechanic:</strong> ${rowData.mechanic}</p>
+                  <p><strong>Downpayment:</strong> ${rowData.downpayment}</p>
+                  <p><strong>Balance:</strong> ${rowData.balance}</p>
                   <p><strong>Amount:</strong> ${rowData.amount}</p>
-                  <p><strong>Status:</strong> ${
-                      rowData.status ? "Active" : "Inactive"
+                  <p><strong>Date In:</strong> ${rowData.date_in}</p>
+                  <p><strong>Date Out:</strong> ${
+                      rowData.date_out ? rowData.date_out : "--"
                   }</p>
+                  <p><strong>Status:</strong> ${rowData.status}</p>
               `);
                 $("#viewModal").removeClass("hidden");
                 break;
             case action.includes("edit"):
                 $("#modalTitle").text("Edit Transaction");
                 $("#transactionId").val(rowData.id);
-                // $("#user_id").val(rowData.user_id);
-                $("#mechanic_id").val(rowData.mechanic_id);
-                $("#code").val(rowData.code);
                 $("#client_name").val(rowData.client_name);
+                $("#unit").val(rowData.unit);
+                $("#color").val(rowData.color);
+                $("#plate_no").val(rowData.plate_no);
                 $("#contact").val(rowData.contact);
                 $("#email").val(rowData.email);
                 $("#address").val(rowData.address);
-                $("#amount").val(rowData.amount);
+
+                // $("#code").val(rowData.code);
+                $("#mechanic_id").val(rowData.mechanic_id);
+                $("#downpayment").val(rowData.downpayment);
+                $("#date_in").val(rowData.date_in);
+                $("#date_out").val(rowData.date_out);
                 $("#status").val(rowData.status);
                 $("#createModal").removeClass("hidden");
                 break;

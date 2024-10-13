@@ -14,6 +14,8 @@ $(document).ready(function () {
             { data: "firstname" },
             { data: "middlename" },
             { data: "lastname" },
+            { data: "position" },
+            { data: "rate" },
             {
                 data: "status",
                 render: function (data) {
@@ -114,24 +116,6 @@ $(document).ready(function () {
         $("#createModal").addClass("hidden");
     });
 
-    // Handle view button click
-    // $("#mechanicsTable").on("click", ".view", function () {
-    //     var rowData = table.row($(this).parents("tr")).data();
-
-    //     // Populate the modal with data
-    //     $("#mechanicDetails").html(`
-    //         <p><strong>Firstname:</strong> ${rowData.firstname}</p>
-    //         <p><strong>Middlename:</strong> ${rowData.middlename}</p>
-    //         <p><strong>Lastname:</strong> ${rowData.lastname}</p>
-    //         <p><strong>Status:</strong> ${
-    //             rowData.status ? "Active" : "Inactive"
-    //         }</p>
-    //     `);
-
-    //     // Show the modal
-    //     $("#viewModal").removeClass("hidden");
-    // });
-
     // Close the view modal
     $("#closeViewModal").on("click", function () {
         $("#viewModal").addClass("hidden");
@@ -157,6 +141,8 @@ $(document).ready(function () {
                     <p><strong>Firstname:</strong> ${rowData.firstname}</p>
                     <p><strong>Middlename:</strong> ${rowData.middlename}</p>
                     <p><strong>Lastname:</strong> ${rowData.lastname}</p>
+                    <p><strong>Position:</strong> ${rowData.position}</p>
+                    <p><strong>Rate:</strong> ${rowData.rate}</p>
                     <p><strong>Status:</strong> ${
                         rowData.status ? "Active" : "Inactive"
                     }</p>
@@ -169,6 +155,8 @@ $(document).ready(function () {
                 $("#firstname").val(rowData.firstname);
                 $("#middlename").val(rowData.middlename);
                 $("#lastname").val(rowData.lastname);
+                $("#position").val(rowData.position);
+                $("#rate").val(rowData.rate);
                 $("#status").val(rowData.status);
                 $("#createModal").removeClass("hidden");
                 break;

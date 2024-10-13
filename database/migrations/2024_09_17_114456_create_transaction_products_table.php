@@ -13,6 +13,7 @@ return new class extends Migration
   {
     Schema::create('transaction_products', function (Blueprint $table) {
       $table->id(); // Primary key, auto-incrementing ID
+      $table->foreignId('transaction_id')->constrained('transactions')->onDelete('cascade');
       $table->foreignId('product_id')->constrained('products')->onDelete('cascade'); // Foreign key reference to product_list table
       $table->integer('quantity'); // Column for product quantity
       $table->decimal('price', 10, 2); // Column for product price, with 2 decimal places
