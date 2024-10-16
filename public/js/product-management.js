@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(document).ready(function () {
     var table = $('#example').DataTable({
         "paging": true,
         "processing": true,
@@ -8,16 +8,16 @@ $(document).ready(function() {
             "type": "GET" // Use GET method for fetching data
         },
         "columnDefs": [
-            { "className": "custom-align-left", "targets": [2,0] } // Apply custom alignment to the 'price' column (3rd column, zero-based index)
+            { "className": "custom-align-left", "targets": [2, 0] } // Apply custom alignment to the 'price' column (3rd column, zero-based index)
         ],
         "columns": [
-            { 
+            {
                 "data": null, // This column will be for the row number
                 "render": function (data, type, row, meta) {
                     return meta.row + 1; // Returns the row number starting from 1
                 }
             },
-            { 
+            {
                 "data": "image_path",
                 "render": function (data) {
                     // Adjust this URL to match your application's URL structure
@@ -25,16 +25,16 @@ $(document).ready(function() {
                     return `<img src="${imageUrl}" alt="Product Image" class="w-20 h-20 object-cover rounded-md">`;
                 }
             },
-            
+
             { "data": "name" },
             // { "data": "description" },
             { "data": "price" },
-            { 
-                "data": "status", 
+            {
+                "data": "status",
                 "render": function (data) {
                     var statusText = '';
                     var statusClass = '';
-            
+
                     if (data == 1) {
                         statusText = 'Active';
                         statusClass = 'bg-green-500 text-white border border-green-700'; // Tailwind class for green background with a border
@@ -42,14 +42,15 @@ $(document).ready(function() {
                         statusText = 'Inactive';
                         statusClass = 'bg-red-500 text-white border border-red-700'; // Updated Tailwind class for red background with a border
                     }
-                    
+
                     return `<span class="inline-block px-3 py-1 rounded-full text-xs font-semibold ${statusClass}">${statusText}</span>`;
-                    
+
                 }
             },
-            
-            
-            { "data": null, 
+
+
+            {
+                "data": null,
                 "defaultContent": `
                     <div class="flex space-x-2">
                         <button class="view text-gray-500 hover:text-gray-700 mr-2" title="View">
@@ -64,21 +65,21 @@ $(document).ready(function() {
                     </div>
                 `
             }
-        ], 
+        ],
         "pageLength": 10, // Set default page length
-        "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ] // Page length options
+        "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]] // Page length options
     });
 
 
-    
+
 
     // Handle action button clicks
-    $('#example').on('click', 'button', function(e) {
+    $('#example').on('click', 'button', function (e) {
         e.preventDefault();
         var action = $(this).attr('class');
         var rowData = table.row($(this).parents('tr')).data();
         console.log(rowData); // Check if data is retrieved correctly
-        switch(true) {
+        switch (true) {
             case action.includes('view'):
                 if (rowData) {
                     $('#productDetails').html(`
@@ -94,14 +95,14 @@ $(document).ready(function() {
                             </div>
                         </div>
                     `);
-                    
-                    
-                    
+
+
+
                     $('#viewModal').removeClass('hidden'); // Show the modal
                 } else {
                     console.error("No row data found.");
                 }
-            break;
+                break;
             case action.includes('edit'):
                 $('#modalTitle').text('Edit Product'); // Set the modal title
                 $('#productId').val(rowData.id); // Set the product ID
@@ -109,10 +110,12 @@ $(document).ready(function() {
                 $('#description').val(rowData.description); // Set the description
                 $('#price').val(rowData.price); // Set the price
                 $('#status').val(rowData.status); // Set the status
-                $('#imagePreview').attr('src', `http://127.0.0.1:8000/storage/${rowData.image_path}`).removeClass('hidden'); // Show the current image
+                // $('#imagePreview').attr('src', `http://127.0.0.1:8000/storage/${rowData.image_path}`).removeClass('hidden'); 
+                const appUrl = "{{ config('app.url') }}";
+                $('#imagePreview').attr('src', `${appUrl}/storage/${rowData.image_path}`).removeClass('hidden');
                 $('#createModal').removeClass('hidden'); // Show the edit modal
                 break;
-            
+
             case action.includes('delete'):
                 // SweetAlert2 confirmation
                 Swal.fire({
@@ -132,11 +135,11 @@ $(document).ready(function() {
                             data: {
                                 _token: $('meta[name="csrf-token"]').attr('content')
                             },
-                            success: function(response) {
+                            success: function (response) {
                                 Swal.fire('Deleted!', 'The product has been deleted.', 'success');
                                 table.ajax.reload();
                             },
-                            error: function(xhr) {
+                            error: function (xhr) {
                                 Swal.fire('Error!', 'There was an issue deleting the product.', 'error');
                             }
                         });
@@ -148,36 +151,36 @@ $(document).ready(function() {
     });
 
     // Close modal functionality
-    $('#closeViewModal').on('click', function() {
+    $('#closeViewModal').on('click', function () {
         $('#viewModal').addClass('hidden');
     });
 
-    $('#createProductForm').on('submit', function(e) {
+    $('#createProductForm').on('submit', function (e) {
         e.preventDefault();
-        
+
         var productId = $('#productId').val();
         var url = productId ? '/products/' + productId : '/products'; // URL for update or create
         var method = productId ? 'POST' : 'POST'; // Using POST; _method will handle it
-        
+
         var formData = new FormData(this); // Using FormData to include files
-    
+
         if (productId) {
             formData.append('_method', 'PUT'); // Laravel requires this for PUT requests
         }
-    
+
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-    
+
         $.ajax({
             url: url,
             method: method, // Change this to method
             data: formData,
             contentType: false, // Prevent jQuery from setting the content-type header
             processData: false, // Prevent jQuery from processing the data
-            success: function(response) {
+            success: function (response) {
                 $('#createModal').addClass('hidden');
                 Swal.fire({
                     icon: 'success',
@@ -185,17 +188,17 @@ $(document).ready(function() {
                     text: productId ? 'The product has been updated successfully.' : 'The product has been created successfully.'
                 }).then(() => {
                     // $('#createModal').addClass('hidden'); // Hide the modal
-                
+
                     $('#createProductForm')[0].reset(); // Reset the form
                     $('#imagePreview').addClass('hidden'); // Hide the image preview
                     table.ajax.reload(); // Reload the DataTable with new data
                 });
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 var errorMessage = 'Error occurred while saving the product.';
                 if (xhr.status === 422) { // Validation error from Laravel
                     var errors = xhr.responseJSON.errors;
-                    errorMessage = 'Validation error(s):\n' + Object.values(errors).map(function(error) {
+                    errorMessage = 'Validation error(s):\n' + Object.values(errors).map(function (error) {
                         return error[0]; // Show the first validation error for each field
                     }).join('\n');
                 }
@@ -207,11 +210,11 @@ $(document).ready(function() {
             }
         });
     });
-    
-    
+
+
 
     // Handle Create Button Click
-    $('#createButton').on('click', function() {
+    $('#createButton').on('click', function () {
         $('#createModal').removeClass('hidden');
         $('#modalTitle').text('Add New Product');
         $('#productId').val('');
@@ -220,7 +223,7 @@ $(document).ready(function() {
     });
 
     // Close modal button functionality
-    $('#closeModal').on('click', function() {
+    $('#closeModal').on('click', function () {
         $('#createModal').addClass('hidden');
     });
 

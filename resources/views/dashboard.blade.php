@@ -4,6 +4,10 @@
             {{ __('Dashboard') }}
         </h2>
     </x-slot>
+
+
+
+
     <div class="py-12">
         <div class="max-w-7xl md:mx-0 mx-4 sm:px-6 lg:px-8">
             <!-- Dashboard Cards Section -->
@@ -107,37 +111,41 @@
                             <div class="font-bold text-xl text-gray-800 mb-1 text-center">Transactions</div>
                             <div class="text-gray-700 text-3xl font-bold mb-2">
                                 {{ $totalTransactions }} <!-- Display total services -->
-                            </div>
-                        </div>
-                    </div>
-                </div> --}}
             </div>
-            <div class="mt-8 bg-white rounded shadow p-4">
-                <div class="text-xl font-bold mb-4">Transactions</div>
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-2">
-                    <div class="flex justify-between items-center bg-red-100 p-4 rounded shadow">
-                        <div class="text-lg font-semibold text-red-700">Pending</div>
-                        <div class="text-lg font-bold text-white px-4 py-2 rounded-full bg-red-700">
-                            {{ $totalPendingTransactions }}</div>
-                    </div>
-                    <div class="flex justify-between items-center bg-yellow-100 p-4 rounded shadow">
-                        <div class="text-lg font-semibold text-yellow-700">Processing</div>
-                        <div class="text-lg font-bold text-white px-4 py-2 rounded-full bg-yellow-700">
-                            {{ $totalProcessingTransactions }}</div>
-                    </div>
-                    <div class="flex justify-between items-center bg-green-100 p-4 rounded shadow">
-                        <div class="text-lg font-semibold text-green-700">Done</div>
-                        <div class="text-lg font-bold text-white px-4 py-2 rounded-full bg-green-700">
-                            {{ $totalDoneTransactions }}</div>
-                    </div>
-                    <div class="flex justify-between items-center bg-blue-100 p-4 rounded shadow">
-                        <div class="text-lg font-semibold text-blue-700">Total</div>
-                        <div class="text-lg font-bold text-white px-4 py-2 rounded-full bg-blue-700">
-                            {{ $totalTransactions }}</div>
-                    </div>
+        </div>
+    </div>
+    </div> --}}
+    </div>
+    <div class="mt-8 bg-white rounded shadow p-4">
+        <div class="text-xl font-bold mb-4">Transactions</div>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-2">
+            <div class="flex justify-between items-center bg-red-100 p-4 rounded shadow">
+                <div class="text-lg font-semibold text-red-700">Pending</div>
+                <div class="text-lg font-bold text-white px-4 py-2 rounded-full bg-red-700">
+                    {{ $totalPendingTransactions }}
+                </div>
+            </div>
+            <div class="flex justify-between items-center bg-yellow-100 p-4 rounded shadow">
+                <div class="text-lg font-semibold text-yellow-700">Processing</div>
+                <div class="text-lg font-bold text-white px-4 py-2 rounded-full bg-yellow-700">
+                    {{ $totalProcessingTransactions }}
+                </div>
+            </div>
+            <div class="flex justify-between items-center bg-green-100 p-4 rounded shadow">
+                <div class="text-lg font-semibold text-green-700">Done</div>
+                <div class="text-lg font-bold text-white px-4 py-2 rounded-full bg-green-700">
+                    {{ $totalDoneTransactions }}
+                </div>
+            </div>
+            <div class="flex justify-between items-center bg-blue-100 p-4 rounded shadow">
+                <div class="text-lg font-semibold text-blue-700">Total</div>
+                <div class="text-lg font-bold text-white px-4 py-2 rounded-full bg-blue-700">
+                    {{ $totalTransactions }}
                 </div>
             </div>
         </div>
+    </div>
+    </div>
     </div>
 
 
