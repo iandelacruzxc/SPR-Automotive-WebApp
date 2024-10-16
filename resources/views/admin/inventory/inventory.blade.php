@@ -40,7 +40,6 @@
 
     @push('scripts')
         <script src="{{ asset('js/inventory.js') }}"></script>
-       
     @endpush
 
 

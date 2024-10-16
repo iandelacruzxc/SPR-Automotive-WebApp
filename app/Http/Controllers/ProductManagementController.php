@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Storage;
 
 class ProductManagementController extends Controller
 {
+
+    
  public function index(Request $request)
 {
     if ($request->ajax()) {

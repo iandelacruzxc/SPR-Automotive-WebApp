@@ -13,6 +13,11 @@ class DashboardController extends Controller
 {
   public function index()
   {
+
+    if (!auth()->user()->hasRole('admin')) {
+      abort(403, 'Unauthorized action.');
+    }
+
     $totalServices = Services::count(); // Fetch the total number of services
     $totalUsers =   User::count();
     $totalProducts = Products::count();

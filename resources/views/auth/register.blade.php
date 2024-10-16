@@ -114,6 +114,16 @@
                         <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
                     </div>
 
+                    <!-- Role Selection -->
+                    <div class="mt-4">
+                        <x-label for="role" value="{{ __('Role') }}" />
+                        <select id="role" name="role" class="block mt-1 w-full" required>
+                            <option value="" disabled selected>{{ __('Select Role') }}</option>
+                            <option value="admin">{{ __('Admin') }}</option>
+                            <option value="user">{{ __('User') }}</option>
+                        </select>
+                    </div>
+
                     <div class="mt-4">
                         <x-label for="password" value="{{ __('Password') }}" />
                         <x-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
