@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Laravel</title>
     @vite('resources/css/app.css')
     <!-- Fonts -->
@@ -90,9 +90,6 @@
                     <a href="{{ url('/dashboard') }}" class="hover:text-gray-400">Dashboard</a>
                     @else
                     <a href="{{ route('login') }}" class="hover:text-gray-400">Log in</a>
-                    @if (Route::has('register'))
-                    <a href="{{ route('register') }}" class="hover:text-gray-400">Register</a>
-                    @endif
                     @endauth
                     @endif
                 </div>
@@ -109,10 +106,6 @@
                             class="text-white text-lg hover:text-gray-400">Dashboard</a>
                         @else
                         <a href="{{ route('login') }}" class="text-white text-lg hover:text-gray-400">Log in</a>
-                        @if (Route::has('register'))
-                        <a href="{{ route('register') }}"
-                            class="text-white text-lg hover:text-gray-400">Register</a>
-                        @endif
                         @endauth
                         @endif
                     </div>
@@ -143,18 +136,20 @@
                 <div class="carousel-wrapper relative overflow-hidden">
                     <div class="carousel-track flex transition-transform duration-500 ease-in-out">
                         <!-- Carousel Items -->
-                            @foreach($products as $product)
-                            <div class="carousel-item flex-shrink-0 w-64 h-40 bg-gray-200 mx-2 rounded-lg shadow-lg">
-                                <img src="{{ asset('storage/' . $product->image_path) }}" alt="{{ $product->name }}"
-                                    class="w-full h-full object-cover rounded-lg">
-                                <div class="p-4">
-                                    <h3 class="text-lg font-semibold">{{ $product->name }}</h3>
-                                    <p class="text-sm mt-2">Description for {{ $product->name }}.</p>
-                                </div>
+                        @foreach($products as $product)
+                        <div class="carousel-item flex-shrink-0 w-64 h-40 bg-gray-200 mx-2 rounded-lg shadow-lg">
+                            <img src="{{ asset('storage/' . $product->image_path) }}" alt="{{ $product->name }}"
+                                class="w-full h-full object-cover rounded-lg">
+                            <div class="p-4">
+                                <h3 class="text-lg font-semibold">{{ $product->name }}</h3>
+                                <p class="text-sm mt-2">Description for {{ $product->name }}.</p>
                             </div>
-                            @endforeach
+                        </div>
+                        @endforeach
                     </div>
                 </div>
+
+
                 <!-- Carousel Controls -->
                 <button
                     class="absolute top-1/2 left-4 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -196,9 +191,78 @@
                 </div>
             </section>
             <!-- End About Us Section -->
+
+            <section class="bg-gray-100 py-12">
+                <!-- Contact Us Section -->
+                <div class="max-w-4xl mx-auto p-8 bg-white rounded-md shadow-lg">
+                    <!-- Section Heading -->
+                    <div class="text-center mb-8">
+                        <h2 class="text-3xl font-bold text-gray-800">Contact Us</h2>
+                        <p class="text-gray-600 mt-2">Have any questions? Please fill out the form below to get in touch with us.</p>
+                    </div>
+
+                    <!-- Form Section -->
+                    <form id="appointmentForm">
+                        <div class="my-6 flex flex-col gap-4">
+
+                            <!-- Service Selection -->
+                            <!-- Service Selection -->
+                            <div class="my-3">
+                                <label for="service" class="block text-sm font-semibold text-gray-700 mb-1">Select Service *</label>
+                                <select name="service" id="service"
+                                    class="block w-full rounded-md border border-slate-300 bg-white px-3 py-2 placeholder-slate-400 shadow-sm focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
+                                    required>
+                                    <option value="" disabled selected>Select a service</option>
+                                    @foreach($services as $service)
+                                    <option value="{{ $service->id }}">{{ $service->name }}</option> <!-- Populate options from the services -->
+                                    @endforeach
+                                </select>
+                            </div>
+
+
+                            <!-- Email Input -->
+                            <div class="my-3">
+                                <label for="email" class="block text-sm font-semibold text-gray-700 mb-1">Email *</label>
+                                <input type="email" name="email" id="email"
+                                    class="block w-full rounded-md border border-slate-300 bg-white px-3 py-2 placeholder-slate-400 shadow-sm focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
+                                    placeholder="Enter your email" required />
+                            </div>
+
+                            <!-- Date and Time Input -->
+                            <div>
+                                <label for="appointment_datetime" class="block text-sm font-semibold text-gray-700 mb-1">Select Date and Time *</label>
+                                <input type="datetime-local" name="appointment_datetime" id="appointment_datetime"
+                                    class="block w-full rounded-md border border-slate-300 bg-white px-3 py-2 placeholder-slate-400 shadow-sm focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 sm:text-sm"
+                                    required />
+                            </div>
+
+                        </div>
+
+                        <!-- Message Textarea -->
+                        <div class="my-3">
+                            <label for="message" class="block text-sm font-semibold text-gray-700 mb-1">Message *</label>
+                            <textarea name="message" id="message" cols="30" rows="10"
+                                class="mb-10 h-40 w-full resize-none rounded-md border border-slate-300 bg-white p-5 font-semibold text-gray-500 placeholder-slate-400 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
+                                placeholder="Type your message here..." required></textarea>
+                        </div>
+
+                        <!-- Book Appointment Button -->
+                        <div class="text-center">
+                            <button type="submit" class="rounded-lg bg-blue-700 px-8 py-5 text-sm font-semibold text-white hover:bg-blue-800">
+                                Book Appointment
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </section>
+
+
+
         </div>
     </main>
     <script src="{{ asset('js/jquery.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function() {
             let currentIndex = 0;
@@ -258,6 +322,97 @@
                 const mobileMenu = document.getElementById('mobileMenu');
                 mobileMenu.classList.toggle('hidden');
             });
+
+
+
+            // Set the minimum date and time to the current date and time
+            function setMinDateTime() {
+                const now = new Date();
+                // Format the date and time to YYYY-MM-DDTHH:mm
+                const formattedDate = now.toISOString().slice(0, 16);
+                $('#appointment_datetime').attr('min', formattedDate);
+            }
+
+            setMinDateTime(); // Set the minimum date and time on page load
+
+            $('#appointmentForm').on('submit', function(e) {
+                e.preventDefault(); // Prevent the default form submission
+
+                // Get the selected date and time
+                const appointmentDateTime = new Date($('#appointment_datetime').val());
+                const now = new Date();
+
+                // Check if the selected date and time are in the past
+                if (appointmentDateTime < now) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Invalid Date and Time',
+                        text: 'Please select a date and time that is in the future.',
+                        confirmButtonText: 'OK'
+                    });
+                    return; // Stop form submission
+                }
+
+
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+
+                // Get form data
+                var formData = $(this).serialize();
+
+                $.ajax({
+                    url: '/guest/appointment', // This is the correct route for storing appointments
+                    type: 'POST',
+                    data: formData,
+                    beforeSend: function() {
+                        // Show the loading SweetAlert
+                        Swal.fire({
+                            title: 'Saving...',
+                            text: 'Please wait while we process your request.',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading(); // Display loading spinner
+                            }
+                        });
+                    },
+                    success: function(response) {
+                        // Close loading alert
+                        Swal.close();
+
+                        // Show success message
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Appointment Booked',
+                            text: response.message,
+                            confirmButtonText: 'OK'
+                        });
+
+                        // Clear the form fields
+                        $('#appointment_datetime').val('');
+                        $('#message').val('');
+                        $('#service').val('');
+                    },
+                    error: function(xhr) {
+                        // Close loading alert
+                        Swal.close();
+
+                        // Show error message
+                        var errorMessage = xhr.responseJSON?.message || 'An unknown error occurred.';
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error Booking Appointment',
+                            text: errorMessage,
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
+
+            });
+
+
         });
     </script>
     <footer class="bg-white text-black py-6">

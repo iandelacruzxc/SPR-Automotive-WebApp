@@ -15,12 +15,12 @@
                     <p class="mt-4 text-lg font-semibold text-gray-900">${{ number_format($product->price, 2) }}</p> <!-- Product price -->
 
                     <!-- Form for adding to cart -->
-                    <form action="{{ route('cart.add', $product->id) }}" method="POST">
-                        @csrf <!-- CSRF token for security -->
+                    <!-- <form action="{{ route('cart.add', $product->id) }}" method="POST">
+                        @csrf 
                         <button type="submit" class="mt-4 w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">
                             Add to Cart
                         </button>
-                    </form>
+                    </form> -->
                 </div>
             </div>
             @endforeach

@@ -9,8 +9,9 @@ class UserController extends Controller
 {
     public function index()
     {
+        $user = auth()->user();
         $products = Products::all(); // Adjust to your logic for fetching featured products
-        return view('users.user-dashboard', compact('products'));
+        return view('users.user-dashboard', compact('products','user'));
     }
 
     public function products()
