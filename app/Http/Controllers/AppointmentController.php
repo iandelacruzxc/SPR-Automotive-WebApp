@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\StatusUpdated;
 use App\Models\Appointment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class AppointmentController extends Controller
 {
@@ -21,18 +23,24 @@ class AppointmentController extends Controller
             'message' => 'required|string|max:1000', // Message is required
             'service' => 'required|exists:services,id', // Ensure the service ID exists in the services table
         ]);
-        
+
         // Store the appointment data
-        Appointment::create([
+        $appointment = Appointment::create([
             'user_id' => auth()->id(), // Assuming the user is logged in
             'appointment_date' => $request->appointment_datetime,
             'message' => $request->message,
             'service_id' => $request->service, // Save the selected service ID
+            'status' => 'pending', // Set default status as 'pending' or modify this line as per your requirement
+            'email' => auth()->user()->email, // Store the user's email
         ]);
-        
+
+        Mail::to(auth()->user()->email)->send(new StatusUpdated($appointment)); // Use user's emailDF
+
         // Return a response
         return response()->json(['message' => 'Appointment booked successfully!']);
     }
+
+    
     public function history(Request $request)
     {
         if ($request->ajax()) {
@@ -48,7 +56,7 @@ class AppointmentController extends Controller
             $columns = ['appointment_date', 'message', 'status', 'user.name']; // Include user name for ordering
 
             // Build the query
-            $query = Appointment::with('user','service')->where('user_id', auth()->id()); // Filter by the authenticated user's ID
+            $query = Appointment::with('user', 'service')->where('user_id', auth()->id()); // Filter by the authenticated user's ID
 
             // Apply search filter if applicable
             if ($searchValue) {
@@ -84,6 +92,9 @@ class AppointmentController extends Controller
                 'data' => $appointments
             ]);
         }
+
+        // Send email based on the appointment details
+
 
         // If not an AJAX request, return the view
         return view('users.appointment.table'); // Your view for displaying appointment history

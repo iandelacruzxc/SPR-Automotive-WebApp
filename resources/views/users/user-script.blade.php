@@ -133,12 +133,26 @@
         // Get form data
         var formData = $(this).serialize();
 
-        // AJAX request
         $.ajax({
             url: '/user/appointment', // This is the correct route for storing appointments
             type: 'POST',
             data: formData,
+            beforeSend: function() {
+                // Show the loading SweetAlert
+                Swal.fire({
+                    title: 'Saving...',
+                    text: 'Please wait while we process your request.',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading(); // Display loading spinner
+                    }
+                });
+            },
             success: function(response) {
+                // Close loading alert
+                Swal.close();
+
+                // Show success message
                 Swal.fire({
                     icon: 'success',
                     title: 'Appointment Booked',
@@ -152,6 +166,10 @@
                 $('#service').val('');
             },
             error: function(xhr) {
+                // Close loading alert
+                Swal.close();
+
+                // Show error message
                 var errorMessage = xhr.responseJSON?.message || 'An unknown error occurred.';
                 Swal.fire({
                     icon: 'error',
@@ -161,7 +179,10 @@
                 });
             }
         });
+
     });
+
+
 
     function formatDate(dateString) {
         const options = {
@@ -244,31 +265,31 @@
         });
 
 
-        
+
     });
 
     document.addEventListener('DOMContentLoaded', function() {
-    // Fetch services when the page loads
-    fetch('/options?models[]=services')
-        .then(response => response.json())
-        .then(data => {
-            if (data.services) {
-                const serviceSelect = document.getElementById('service');
-                data.services.forEach(service => {
-                    // Create a new option element
-                    const option = document.createElement('option');
-                    option.value = service.id; // Use the service ID as the value
-                    option.textContent = service.name; // Display the service name
-                    serviceSelect.appendChild(option); // Append the option to the select element
-                });
-            } else {
-                console.error('No services found.');
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching services:', error);
-        });
-});
+        // Fetch services when the page loads
+        fetch('/options?models[]=services')
+            .then(response => response.json())
+            .then(data => {
+                if (data.services) {
+                    const serviceSelect = document.getElementById('service');
+                    data.services.forEach(service => {
+                        // Create a new option element
+                        const option = document.createElement('option');
+                        option.value = service.id; // Use the service ID as the value
+                        option.textContent = service.name; // Display the service name
+                        serviceSelect.appendChild(option); // Append the option to the select element
+                    });
+                } else {
+                    console.error('No services found.');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching services:', error);
+            });
+    });
 
     
 </script>

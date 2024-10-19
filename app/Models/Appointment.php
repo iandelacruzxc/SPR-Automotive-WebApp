@@ -15,6 +15,7 @@ class Appointment extends Model
         'appointment_date',
         'message',
         'service_id',
+        'email',
     ];
 
     // Optionally, you can define relationships

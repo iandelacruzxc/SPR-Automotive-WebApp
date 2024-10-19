@@ -62,6 +62,7 @@
     </header>
     <main>
     @include('users.nav')
+    
         <div class="container mx-auto p-4">
             <!-- Main Banner -->
             <section class="relative bg-cover bg-center custom-banner-height"

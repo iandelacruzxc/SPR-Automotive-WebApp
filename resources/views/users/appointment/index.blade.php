@@ -13,7 +13,6 @@
         <div class="p-8">
             <form id="appointmentForm"> <!-- Added form ID here -->
                 <div class="my-6 flex flex-col gap-4">
-
                     <div class="my-6">
                         <label for="service" class="block text-sm font-semibold text-gray-700 mb-1">Select Service *</label>
                         <select name="service" id="service"
@@ -23,9 +22,6 @@
                             <!-- Dynamic options will be appended here -->
                         </select>
                     </div>
-
-
-
                     <div>
                         <label for="appointment_datetime" class="block text-sm font-semibold text-gray-700 mb-1">Select Date and Time *</label>
                         <input type="datetime-local" name="appointment_datetime" id="appointment_datetime"
@@ -45,7 +41,6 @@
                     <button type="submit" class="rounded-lg bg-blue-700 px-8 py-5 text-sm font-semibold text-white hover:bg-blue-800">Book Appointment</button> <!-- Changed to button -->
                 </div>
             </form>
-
         </div>
     </div>
 </div>

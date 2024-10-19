@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Appointment;
 use Illuminate\Http\Request;
+use App\Mail\StatusUpdated; // Import your Mailable
+use Illuminate\Support\Facades\Mail;
 
 class AppointmentAdminController extends Controller
 {
@@ -19,10 +21,10 @@ class AppointmentAdminController extends Controller
             $orderDir = $request->input('order.0.dir');
 
             // Get the column names for ordering
-            $columns = ['appointment_date', 'message', 'status', 'user.name']; // Include user name for ordering
+            $columns = ['appointment_date', 'message', 'status', 'user.name','email']; // Include user name for ordering
 
             // Build the query
-            $query = Appointment::with('user','service'); // Eager load the user relationship
+            $query = Appointment::with('user', 'service'); // Eager load the user relationship
 
             // Apply search filter if applicable
             if ($searchValue) {
@@ -70,6 +72,15 @@ class AppointmentAdminController extends Controller
         // Update the status
         $appointment->status = $request->input('status');
         $appointment->save();
+
+        // Send email notification based on user_id
+        if ($appointment->user_id) {
+            // If user_id is not null, use the user's email
+            Mail::to($appointment->user->email)->send(new StatusUpdated($appointment));
+        } else {
+            // If user_id is null, use the appointment's email
+            Mail::to($appointment->email)->send(new StatusUpdated($appointment));
+        }
 
         return response()->json(['message' => 'Status updated successfully!']);
     }

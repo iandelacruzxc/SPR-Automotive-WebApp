@@ -126,6 +126,8 @@
                 <div class="mt-4 text-sm text-gray-600 text-center">
                     <!-- <p>Already have an account? <a href="#" class="text-black hover:underline">Login here</a> -->
                     <p>Don't have an account? <a href="/register" class="text-black hover:underline">Register here</a>
+                    <p><a href="/" class="text-black hover:underline"><b>back to home<b></a>
+
                     </p>
                 </div>
             </div>

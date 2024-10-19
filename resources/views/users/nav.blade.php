@@ -105,20 +105,49 @@
                         </div>
                     </div>
                     <!-- Logout and Cart -->
-                    <form action="{{ route('logout') }}" method="POST" class="inline">
-                        @csrf
-                        <button type="submit" class="hover:text-gray-400 bg-transparent border-none cursor-pointer">
-                            Logout
+
+                    <div x-data="{ open: false }" class="relative">
+                        <button @click="open = !open" class="hover:text-gray-400 focus:outline-none">
+                            @if(auth()->check())
+                            Welcome, {{ auth()->user()->name }} <!-- Display user name -->
+                            @else
+                            Please log in
+                            @endif
                         </button>
-                    </form>
-                    <a href="{{ url('/cart') }}" class="flex items-center hover:text-gray-400 relative">
+
+                        <!-- Dropdown Menu -->
+                        <div
+                            x-show="open"
+                            @click.away="open = false"
+                            class="absolute mt-2 w-48 bg-white shadow-lg rounded-md py-2 z-10"
+                            x-transition:enter="transition ease-out duration-100"
+                            x-transition:enter-start="transform opacity-0 scale-95"
+                            x-transition:enter-end="transform opacity-100 scale-100"
+                            x-transition:leave="transition ease-in duration-75"
+                            x-transition:leave-start="transform opacity-100 scale-100"
+                            x-transition:leave-end="transform opacity-0 scale-95">
+                            <div class="border-t border-gray-200"></div> <!-- Divider -->
+                            <div class="py-1">
+                                <form action="{{ route('logout') }}" method="POST" class="inline">
+                                    @csrf
+                                    <button type="submit" class="w-full text-left block px-4 py-2 text-gray-700 hover:bg-gray-100">
+                                        Logout
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <!-- <a href="{{ url('/cart') }}" class="flex items-center hover:text-gray-400 relative">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l1 4h13l1-4h2M3 3h2l1 4h13l1-4h2m-1 16a2 2 0 100-4 2 2 0 000 4zm-11 0a2 2 0 100-4 2 2 0 000 4zm11-4H7m4 0l1-3m3 0H9m7 0l1-3H9m7 0H9"></path>
                         </svg>
                         <span class="bg-red-500 text-white rounded-full px-2 py-1 text-xs">
                             {{ session()->has('cart') ? count(session('cart')) : 0 }}
                         </span>
-                    </a>
+                    </a> -->
                 </div>
 
                 <!-- Mobile Menu -->

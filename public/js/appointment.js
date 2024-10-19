@@ -104,7 +104,7 @@ $(document).ready(function () {
         var appointmentId = $(this).data('id');
         var newStatus = $(this).val();
         var $dropdown = $(this); // Store reference to dropdown for later
-
+    
         // Use SweetAlert for confirmation
         Swal.fire({
             title: 'Are you sure?',
@@ -117,6 +117,16 @@ $(document).ready(function () {
             cancelButtonText: 'Cancel'
         }).then((result) => {
             if (result.isConfirmed) {
+                // Show loading indicator
+                Swal.fire({
+                    title: 'Updating...',
+                    text: 'Please wait while we update the status.',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+    
                 // User confirmed the change, send AJAX request
                 $.ajax({
                     url: '/admin-appointment/' + appointmentId, // Use resource route
@@ -126,6 +136,9 @@ $(document).ready(function () {
                         status: newStatus
                     },
                     success: function (response) {
+                        // Close the loading indicator
+                        Swal.close();
+    
                         Swal.fire(
                             'Updated!',
                             'The status has been changed to ' + newStatus + '.',
@@ -134,6 +147,9 @@ $(document).ready(function () {
                         $('#example').DataTable().ajax.reload(); // Reload the DataTable to reflect the changes
                     },
                     error: function (xhr, status, error) {
+                        // Close the loading indicator
+                        Swal.close();
+    
                         Swal.fire(
                             'Error!',
                             'There was an issue updating the status. Please try again.',
@@ -149,7 +165,7 @@ $(document).ready(function () {
             }
         });
     });
-
+    
     // Store original status value when dropdown is focused (before change)
     $(document).on('focus', '.status-dropdown', function () {
         $(this).data('original-status', $(this).val());

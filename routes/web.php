@@ -9,6 +9,7 @@ use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\ProductManagementController;
 use App\Http\Controllers\MechanicController;
 use App\Http\Controllers\OptionController;
+use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ServiceManagementController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UserController;
@@ -19,6 +20,8 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::get('/', [HomeController::class, 'index']);
+Route::post('guest/appointment', [HomeController::class, 'store']);
+
 
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function () {
   Route::get('/dashboard', function () {
@@ -29,6 +32,10 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
 Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
 Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('login.submit');
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+
+
+Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+Route::post('/register', [RegisterController::class, 'register']);
 
 Route::middleware(['auth'])->group(function () {
   Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
