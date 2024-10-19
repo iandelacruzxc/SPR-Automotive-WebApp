@@ -8,6 +8,11 @@ class ServiceManagementController extends Controller
 {
     public function index()
     {
+
+        if (!auth()->user()->hasRole('admin')) {
+            abort(403, 'Unauthorized action.');
+          }
+        
         return view('admin.service-management.service-management');
     }
 

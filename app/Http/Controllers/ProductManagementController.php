@@ -9,8 +9,16 @@ use Illuminate\Support\Facades\Storage;
 
 class ProductManagementController extends Controller
 {
+
+    
  public function index(Request $request)
 {
+
+    if (!auth()->user()->hasRole('admin')) {
+        abort(403, 'Unauthorized action.');
+      }
+
+      
     if ($request->ajax()) {
         // Fetching parameters
         $draw = $request->input('draw');
