@@ -27,7 +27,6 @@ Route::post('guest/appointment', [HomeController::class, 'store']);
 Route::get('/email/verify/{id}/{hash}', [AuthenticatedSessionController::class, 'verifyEmail'])->name('email.verify');
 
 
-
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function () {
   Route::get('/dashboard', function () {
     return view('dashboard');
@@ -63,7 +62,9 @@ Route::middleware(['auth'])->group(function () {
   Route::delete('/mechanics/delete/{id}', [MechanicController::class, 'destroy']);
 
   Route::resource('admin-appointment', AppointmentAdminController::class)->except(['create', 'edit']);
-
+  // Route::get('/admin/transaction/details', function () {
+  //   return view('admin.transaction.transaction-details');
+  // });
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -74,8 +75,7 @@ Route::middleware(['auth'])->group(function () {
   Route::post('/user/cart/update/{id}', [UserController::class, 'updateQuantity'])->name('cart.update');
   Route::get('/cart', [UserController::class, 'viewCart'])->name('cart.index');
 
-// Resource route for appointments
-Route::resource('user/appointment', AppointmentController::class)->except(['create', 'edit']);
-Route::get('/user/appointment-history', [AppointmentController::class, 'history'])->name('user.history');
-
+  // Resource route for appointments
+  Route::resource('user/appointment', AppointmentController::class)->except(['create', 'edit']);
+  Route::get('/user/appointment-history', [AppointmentController::class, 'history'])->name('user.history');
 });

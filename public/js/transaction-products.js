@@ -4,37 +4,20 @@ $(document).ready(function () {
         processing: true,
         serverSide: true,
         ajax: {
-            url: "/inventory",
+            url: "/transaction-products",
             type: "GET", // Use GET method for fetching data
         },
-        columnDefs: [
-            { className: "custom-align-left", targets: [2, 0] }, // Apply custom alignment to specific columns
-        ],
         columns: [
-            {
-                data: null, // This column will be for the row number
-                render: function (data, type, row, meta) {
-                    return meta.row + 1; // Returns the row number starting from 1
-                },
-            },
-            {
-                data: "image_path",
-                render: function (data) {
-                    // Adjust this URL to match your application's URL structure
-                    const imageUrl = `http://127.0.0.1:8000/storage/${data}`;
-                    return `<img src="${imageUrl}" alt="Product Image" class="w-20 h-20 object-cover rounded-md">`;
-                },
-            },
             { data: "name" },
             { data: "quantity" },
-            { data: "quantity" },
+            { data: "price" },
             {
                 data: null,
                 render: function (data, type, row) {
                     return `
                         <div class="flex justify-center space-x-2">
-                            <button class="view text-gray-500 hover:text-gray-700 mr-2" data-id="${row.id}" title="View">
-                                <i class="fas fa-eye"></i>
+                            <button class="delete text-gray-500 hover:text-gray-700 mr-2" data-id="${row.id}" title="Delete">
+                                <i class="fas fa-trash"></i>
                             </button>
                         </div>
                     `;
@@ -42,28 +25,21 @@ $(document).ready(function () {
             },
         ],
         pageLength: 10, // Set default page length
-
         lengthMenu: [
             [10, 25, 50, -1],
             [10, 25, 50, "All"],
         ], // Page length options
     });
 
-    $(document).on("click", ".view", function () {
-        var productId = $(this).data("id");
-        // Redirect to the show page for the selected product
-        window.location.href = "/inventory/" + productId;
-    });
-
-    var productId = document.getElementById("product-id").value;
-    console.log(productId);
+    var transactionId = document.getElementById("transaction-id").value;
+    console.log(transactionId);
     // Use this productId in your DataTable initialization
     var table = $("#inventoryTable").DataTable({
         paging: true,
         processing: true,
         serverSide: true,
         ajax: {
-            url: "/inventory/" + productId,
+            url: "/inventory/" + transactionId,
             type: "GET",
         },
         columns: [{ data: "stock_date" }, { data: "quantity" }],
