@@ -10,6 +10,9 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
     <!-- Styles -->
     <style>
         .carousel-wrapper {
@@ -60,6 +63,9 @@
     <header>
         <h1>@yield('header')</h1>
     </header>
+
+
+
     <main>
         <nav class="bg-white text-black p-4">
             <div class="container mx-auto flex items-center justify-between">

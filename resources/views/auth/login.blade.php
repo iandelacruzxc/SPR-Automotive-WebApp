@@ -99,13 +99,6 @@
         <p>or with email</p>
       </div> -->
 
-      <script>
-        Swal.fire({
-  title: "Good job!",
-  text: "You clicked the button!",
-  icon: "success"
-});
-</script>
 
       <x-validation-errors class="mb-4" />
 

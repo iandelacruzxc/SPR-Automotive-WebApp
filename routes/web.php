@@ -3,6 +3,7 @@
 use App\Http\Controllers\AppointmentAdminController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InventoryController;
@@ -21,6 +22,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index']);
 Route::post('guest/appointment', [HomeController::class, 'store']);
+// Route::get('/email/verify/{id}', [VerificationController::class, 'verify'])->name('verification.verify')->middleware('signed');
+// Route::post('/email/resend', [VerificationController::class, 'resend'])->name('verification.resend');
+Route::get('/email/verify/{id}/{hash}', [AuthenticatedSessionController::class, 'verifyEmail'])->name('email.verify');
+
 
 
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function () {
@@ -36,6 +41,11 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name
 
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [RegisterController::class, 'register']);
+
+
+Route::get('/admin/register', [RegisterController::class, 'create'])->name('admin.register');
+Route::post('/admin/register', [RegisterController::class, 'registerAdmin']);
+
 
 Route::middleware(['auth'])->group(function () {
   Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -59,6 +69,7 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth'])->group(function () {
   Route::get('/user/dashboard', [UserController::class, 'index'])->name('user.dashboard');
   Route::get('/user/products', [UserController::class, 'products'])->name('user.products');
+  Route::get('/user/services', [UserController::class, 'services'])->name('user.services');
   Route::post('/cart/add/{productId}', [UserController::class, 'addToCart'])->name('cart.add');
   Route::post('/user/cart/update/{id}', [UserController::class, 'updateQuantity'])->name('cart.update');
   Route::get('/cart', [UserController::class, 'viewCart'])->name('cart.index');
