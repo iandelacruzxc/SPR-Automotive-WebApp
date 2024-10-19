@@ -84,6 +84,7 @@
                 <!-- Navigation Tabs -->
                 <div id="navMenu" class="hidden lg:flex items-center space-x-4">
                     <a href="{{ url('/user/dashboard') }}" class="hover:text-gray-400">Home</a>
+                    <a href="{{ url('/user/services') }}" class="hover:text-gray-400">Services</a>
                     <a href="{{ url('/user/products') }}" class="hover:text-gray-400">Products</a>
                     <div x-data="{ open: false }" class="relative">
                         <button @click="open = !open" class="hover:text-gray-400 focus:outline-none">

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Products;
 use Illuminate\Http\Request;
+use App\Models\Services;
 
 class UserController extends Controller
 {
@@ -18,6 +19,12 @@ class UserController extends Controller
     {
         $products = Products::all(); // Adjust to your logic for fetching featured products
         return view('users.products', compact('products'));
+    }
+
+    public function services()
+    {
+        $services = services::all(); // Adjust to your logic for fetching featured services
+        return view('users.services', compact('services'));
     }
 
 
