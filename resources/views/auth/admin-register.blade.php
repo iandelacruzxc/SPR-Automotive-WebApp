@@ -76,7 +76,7 @@
         <!-- Right Pane -->
         <div class="w-full bg-gray-100 lg:w-1/2 flex items-center justify-center">
             <div class="max-w-md w-full p-6">
-                <h1 class="text-3xl font-semibold mb-6 text-black text-center">Sign Up</h1>
+                <h1 class="text-3xl font-semibold mb-6 text-black text-center">Admin Sign Up</h1>
                 <!-- <h1 class="text-sm font-semibold mb-6 text-gray-500 text-center">Join to Our Community with all time access and free </h1> -->
                 <div class="mt-4 flex flex-col lg:flex-row items-center justify-between">
                     <!-- <div class="w-full lg:w-1/2 mb-2 lg:mb-0">
@@ -102,9 +102,7 @@
 
                 <x-validation-errors class="mb-4" />
 
-                <!-- <h1>ADMIN REGISTRATION </h1> -->
-
-                <form method="POST" action="{{ route('register') }}" class="space-y-4">
+                <form method="POST" action="{{ route('admin.register') }}" class="space-y-4">
                     @csrf
                     <div>
                         <x-label for="name" value="{{ __('Name') }}" />
@@ -115,16 +113,6 @@
                         <x-label for="email" value="{{ __('Email') }}" />
                         <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
                     </div>
-
-                    <!-- Role Selection -->
-                    <!-- <div class="mt-4">
-                        <x-label for="role" value="{{ __('Role') }}" />
-                        <select id="role" name="role" class="block mt-1 w-full" required>
-                            <option value="" disabled selected>{{ __('Select Role') }}</option>
-                            <option value="admin">{{ __('Admin') }}</option>
-                            <option value="user">{{ __('User') }}</option>
-                        </select>
-                    </div> -->
 
                     <div class="mt-4">
                         <x-label for="password" value="{{ __('Password') }}" />
