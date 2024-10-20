@@ -89,7 +89,7 @@ class MechanicController extends Controller
       'lastname' => $validated['lastname'],
       'position' => $validated['position'],
       'rate' => $validated['rate'],
-      'status' => $validated['status'] == '1' ? true : false, // Convert to boolean
+      'status' => $validated['status'], // Convert to boolean
       'delete_flag' => false, // Convert to boolean
     ]);
 
@@ -115,7 +115,6 @@ class MechanicController extends Controller
     return response()->json(['message' => 'Mechanic updated successfully.']);
   }
 
-  // app/Http/Controllers/ServiceController.php
   public function destroy($id)
   {
     $mechanic = Mechanic::findOrFail($id);

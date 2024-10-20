@@ -13,6 +13,8 @@ use App\Http\Controllers\OptionController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ServiceManagementController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\TransactionProductController;
+use App\Http\Controllers\TransactionServiceController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -54,6 +56,8 @@ Route::middleware(['auth'])->group(function () {
   Route::resource('products', ProductManagementController::class)->except(['create', 'edit']);
   Route::resource('inventory', InventoryController::class)->except(['create', 'edit']);
   Route::resource('transactions', TransactionController::class)->except(['create', 'edit']);
+  Route::resource('transaction-services', TransactionServiceController::class)->except(['create', 'edit']);
+  Route::resource('transaction-products', TransactionProductController::class)->except(['create', 'edit']);
   Route::get('/options', [OptionController::class, 'getOptions']);
   Route::get('/mechanics', [MechanicController::class, 'index'])->name('admin.mechanics');
   Route::get('/mechanics/data', [MechanicController::class, 'getData']);

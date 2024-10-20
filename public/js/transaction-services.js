@@ -1,94 +1,125 @@
 $(document).ready(function () {
-    var table = $("#example").DataTable({
+    var transactionId = document.getElementById("transactionId").value;
+    var serviceTable = $("#serviceTable").DataTable({
         paging: true,
         processing: true,
         serverSide: true,
         ajax: {
-            url: "/inventory",
+            url: "/transaction-services/" + transactionId,
             type: "GET", // Use GET method for fetching data
         },
-        columnDefs: [
-            { className: "custom-align-left", targets: [2, 0] }, // Apply custom alignment to specific columns
-        ],
         columns: [
-            {
-                data: null, // This column will be for the row number
-                render: function (data, type, row, meta) {
-                    return meta.row + 1; // Returns the row number starting from 1
-                },
-            },
-            {
-                data: "image_path",
-                render: function (data) {
-                    // Adjust this URL to match your application's URL structure
-                    const imageUrl = `http://127.0.0.1:8000/storage/${data}`;
-                    return `<img src="${imageUrl}" alt="Product Image" class="w-20 h-20 object-cover rounded-md">`;
-                },
-            },
             { data: "name" },
-            { data: "quantity" },
-            { data: "quantity" },
+            { data: "price", orderable: false },
             {
                 data: null,
-                render: function (data, type, row) {
-                    return `
-                        <div class="flex justify-center space-x-2">
-                            <button class="view text-gray-500 hover:text-gray-700 mr-2" data-id="${row.id}" title="View">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </div>
-                    `;
-                },
+                orderable: false,
+                defaultContent: `
+                  <div class="flex space-x-2">
+                      <button class="delete text-red-600 hover:text-red-800" title="Delete">
+                          <i class="fas fa-trash-alt"></i>
+                      </button>
+                  </div>
+              `,
             },
         ],
         pageLength: 10, // Set default page length
-
         lengthMenu: [
             [10, 25, 50, -1],
             [10, 25, 50, "All"],
         ], // Page length options
     });
 
-    $(document).on("click", ".view", function () {
-        var productId = $(this).data("id");
-        // Redirect to the show page for the selected product
-        window.location.href = "/inventory/" + productId;
+    $("#service_id").on("change", function () {
+        // Get the selected option
+        var selectedOption = $(this).find("option:selected");
+
+        // Get the price from the data attribute of the selected option
+        var selectedPrice = selectedOption.data("price");
+
+        // Update the price input with the selected price
+        if (selectedPrice) {
+            $("#price").val(selectedPrice);
+        } else {
+            $("#price").val(""); // Clear the price if no service is selected
+        }
     });
 
-    var productId = document.getElementById("product-id").value;
-    console.log(productId);
-    // Use this productId in your DataTable initialization
-    var table = $("#inventoryTable").DataTable({
-        paging: true,
-        processing: true,
-        serverSide: true,
-        ajax: {
-            url: "/inventory/" + productId,
-            type: "GET",
-        },
-        columns: [{ data: "stock_date" }, { data: "quantity" }],
-        pageLength: 10,
-        lengthMenu: [
-            [10, 25, 50, -1],
-            [10, 25, 50, "All"],
-        ],
+    $("#product_id").on("change", function () {
+      // Get the selected option
+      var selectedOption = $(this).find("option:selected");
+
+      // Get the price from the data attribute of the selected option
+      var selectedPrice = selectedOption.data("price");
+
+      // Update the price input with the selected price
+      if (selectedPrice) {
+          $("#p_price").val(selectedPrice);
+      } else {
+          $("#p_price").val(""); // Clear the price if no service is selected
+      }
+  });
+
+    // Handle action button clicks
+    $("#serviceTable").on("click", "button", function (e) {
+        e.preventDefault();
+        var action = $(this).attr("class");
+        var rowData = serviceTable.row($(this).parents("tr")).data();
+        switch (true) {
+            case action.includes("delete"):
+                // SweetAlert2 confirmation
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, remove it!",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Proceed with the delete operation
+                        $.ajax({
+                            url: "/transaction-services/" + rowData.id, // Adjust URL as needed
+                            type: "DELETE",
+                            data: {
+                                _token: $('meta[name="csrf-token"]').attr(
+                                    "content"
+                                ),
+                            },
+                            success: function (response) {
+                                Swal.fire(
+                                    "Deleted!",
+                                    "The service has been removed.",
+                                    "success"
+                                );
+                                serviceTable.ajax.reload();
+                            },
+                            error: function (xhr) {
+                                Swal.fire(
+                                    "Error!",
+                                    "There was an issue removing the service.",
+                                    "error"
+                                );
+                            },
+                        });
+                    }
+                });
+                break;
+        }
+        $(this).closest(".action-menu").addClass("hidden");
     });
 
-    // ADD AND EDIT
-    $("#createStocksForm").on("submit", function (e) {
+    // Close modal functionality
+    $("#closeViewModal").on("click", function () {
+        $("#viewModal").addClass("hidden");
+    });
+
+    $("#addTransactionServiceForm").on("submit", function (e) {
         e.preventDefault();
 
-        var stockId = $("#stockId").val();
-        var productId = $("#productId").val();
-        var url = stockId ? "/inventory/" + stockId : "/inventory"; // URL for update or create
-
-        var method = stockId ? "POST" : "POST"; // Using POST; _method will handle it
-
         var formData = new FormData(this); // Using FormData to include files
-
-        if (stockId) {
-            formData.append("_method", "PUT"); // Laravel requires this for PUT requests
-        }
+        formData.append("transaction_id", transactionId);
 
         $.ajaxSetup({
             headers: {
@@ -97,8 +128,8 @@ $(document).ready(function () {
         });
 
         $.ajax({
-            url: url,
-            method: method, // Change this to method
+            url: "/transaction-services",
+            method: "POST", // Change this to method
             data: formData,
             contentType: false, // Prevent jQuery from setting the content-type header
             processData: false, // Prevent jQuery from processing the data
@@ -106,20 +137,17 @@ $(document).ready(function () {
                 $("#createModal").addClass("hidden");
                 Swal.fire({
                     icon: "success",
-                    title: stockId ? "Updated!" : "Created!",
-                    text: stockId
-                        ? "The stocks has been updated successfully."
-                        : "The stocks has been created successfully.",
+                    title: "Added",
+                    text: "Service added successfully.",
                 }).then(() => {
                     // $('#createModal').addClass('hidden'); // Hide the modal
 
-                    $("#createStocksForm")[0].reset(); // Reset the form
-                    $("#imagePreview").addClass("hidden"); // Hide the image preview
-                    table.ajax.reload(); // Reload the DataTable with new data
+                    $("#addTransactionServiceForm")[0].reset(); // Reset the form
+                    serviceTable.ajax.reload(); // Reload the DataTable with new data
                 });
             },
             error: function (xhr) {
-                var errorMessage = "Error occurred while saving the stocks.";
+                var errorMessage = "Error occurred while saving the product.";
                 if (xhr.status === 422) {
                     // Validation error from Laravel
                     var errors = xhr.responseJSON.errors;
@@ -141,21 +169,15 @@ $(document).ready(function () {
     });
 
     // Handle Create Button Click
-    $("#createButton").on("click", function () {
-        $("#createModal").removeClass("hidden");
-        $("#modalTitle").text("Add Stocks");
-        $("#stockId").val("");
-        $("#createStocksForm")[0].reset();
+    $("#addServiceButton").on("click", function () {
+        $("#addServiceModal").removeClass("hidden");
+        $("#addServiceModalTitle").text("Add Service");
+        $("#productId").val("");
+        $("#addTransactionServiceForm")[0].reset();
     });
 
     // Close modal button functionality
-    $("#closeModal").on("click", function () {
-        $("#createModal").addClass("hidden");
-    });
-
-    $("#createButton").on("click", function () {
-        var productId = $(this).data("product-id"); // Get the product ID from the button
-        $("#productId").val(productId); // Set the product ID in the hidden input in the modal
-        $("#createModal").removeClass("hidden"); // Show the modal
+    $("#closeAddServiceModal").on("click", function () {
+        $("#addServiceModal").addClass("hidden");
     });
 });

@@ -63,12 +63,10 @@ $(document).ready(function () {
         url: "/options", // Assuming this is the route to the controller method
         method: "GET",
         data: {
-            models: ["products", "mechanics"],
+            models: ["products", "mechanics", "services"],
         },
         success: function (response) {
             console.log(response);
-            // response.products will contain the products data
-            // response.mechanics will contain the mechanics data
 
             var mechanicId = $("#mechanic_id");
             var mechanicOptions = response.mechanics.map(function (item) {
@@ -76,7 +74,25 @@ $(document).ready(function () {
                     .attr("value", item.id)
                     .text(item.fullname);
             });
-            mechanicId.append(mechanicOptions); // Append all options at once
+            mechanicId.append(mechanicOptions);
+
+            var serviceId = $("#service_id");
+            var serviceOptions = response.services.map(function (item) {
+                return $("<option></option>")
+                    .attr("value", item.id)
+                    .data("price", item.price)
+                    .text(`${item.name}`);
+            });
+            serviceId.append(serviceOptions);
+
+            var productId = $("#product_id");
+            var productOptions = response.products.map(function (item) {
+                return $("<option></option>")
+                    .attr("value", item.id)
+                    .data("price", item.price)
+                    .text(`${item.name}`);
+            });
+            productId.append(productOptions); // Append all options at once
         },
         error: function (error) {
             console.log("Error:", error.responseJSON);

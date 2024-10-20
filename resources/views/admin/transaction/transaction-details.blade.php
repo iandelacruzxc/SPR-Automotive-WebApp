@@ -36,6 +36,7 @@
                             </button>
                         </div>
                     </div>
+                    <input type="hidden" id="transactionId" name="transactionId" value="{{ $transaction->id }}">
                     <div class="grid md:grid-cols-2 items-start">
                         <div class="grid grid-cols-2 gap-y-1">
                             <div class="px-4 font-semibold text-gray-800">Transaction Code:</div>
@@ -75,65 +76,51 @@
                 </div>
                 <div class="grid md:grid-cols-2 gap-2">
                     <div class="border rounded p-4 mb-2">
-                        <div class="flex justify-end mb-2">
-                            <button id="createButton"
+                        <div class="flex justify-between items-center mb-2">
+                            <div class="text-lg font-bold">Services</div>
+                            <button id="addServiceButton"
                                 class="inline-block bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
                                 Add Service
                             </button>
                         </div>
-                        <table class="table-auto w-full text-center">
+                        <table id="serviceTable" class="table-auto w-full text-center">
                             <thead class="bg-gray-200">
                                 <th class="text-gray-900">Name</th>
                                 <th class="text-gray-900">Price</th>
                                 <th class="text-gray-900">Action</th>
                             </thead>
                             <tbody class="divide-y divide-gray-200 text-gray-600">
-                                <tr>
-                                    <td>Repainting</td>
-                                    <td>1500</td>
-                                    <td><button class="text-red-500 hover:text-red-600" title="Delete"><i
-                                                class="fa-solid fa-trash"></i></button></td>
-                                </tr>
-                                <tr>
-                                    <td>Coating</td>
-                                    <td>1500</td>
-                                    <td><button class="text-red-500 hover:text-red-600" title="Delete"><i
-                                                class="fa-solid fa-trash"></i></button></td>
-                                </tr>
                             </tbody>
                         </table>
                     </div>
                     <div class="border rounded p-4 mb-2">
-                        <div class="flex justify-end mb-2">
-                            <button id="createButton"
+                        <div class="flex justify-between items-center mb-2">
+                            <div class="text-lg font-bold">Products</div>
+                            <button id="addProductButton"
                                 class="inline-block bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
                                 Add Product
                             </button>
                         </div>
-                        <table class="table-auto w-full text-center">
+                        <table id="productTable" class="table-auto w-full text-center">
                             <thead class="bg-gray-200">
                                 <th class="text-gray-900">Name</th>
-                                <th class="text-gray-900">Quantity</th>
                                 <th class="text-gray-900">Price</th>
+                                <th class="text-gray-900">Quantity</th>
+                                <th class="text-gray-900">Total</th>
                                 <th class="text-gray-900">Action</th>
                             </thead>
                             <tbody class="divide-y divide-gray-200 text-gray-600">
-                                <tr>
-                                    <td>Paint</td>
-                                    <td>1</td>
-                                    <td>1500</td>
-                                    <td><button class="text-red-500 hover:text-red-600" title="Delete"><i
-                                                class="fa-solid fa-trash"></i></button></td>
-                                </tr>
-                                <tr>
-                                    <td>Paint</td>
-                                    <td>2</td>
-                                    <td>3000</td>
-                                    <td><button class="text-red-500 hover:text-red-600" title="Delete"><i
-                                                class="fa-solid fa-trash"></i></button></td>
-                                </tr>
                             </tbody>
                         </table>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="">
+                        <label for="mechanic_id" class="block text-sm text-gray-700">Mechanic</label>
+                        <select id="mechanic_id" name="mechanic_id"
+                            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm" required>
+                            <option value="" selected>--</option>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -144,5 +131,7 @@
 
     @push('scripts')
         <script src="{{ asset('js/transactions.js') }}"></script>
+        <script src="{{ asset('js/transaction-services.js') }}"></script>
+        <script src="{{ asset('js/transaction-products.js') }}"></script>
     @endpush
 </x-app-layout>
