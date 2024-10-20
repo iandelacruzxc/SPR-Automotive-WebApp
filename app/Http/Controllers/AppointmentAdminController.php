@@ -21,7 +21,7 @@ class AppointmentAdminController extends Controller
             $orderDir = $request->input('order.0.dir');
 
             // Get the column names for ordering
-            $columns = ['appointment_date', 'message', 'status', 'user.name','email']; // Include user name for ordering
+            $columns = ['appointment_date', 'message', 'status', 'user.name','email','user.email']; // Include user name for ordering
 
             // Build the query
             $query = Appointment::with('user', 'service'); // Eager load the user relationship

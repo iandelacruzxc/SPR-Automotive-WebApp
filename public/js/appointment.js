@@ -21,7 +21,27 @@ $(document).ready(function () {
             "type": "GET" // Use GET method for fetching data
         },
         "columns": [
-            { "data": "user.name" },
+            // { "data": "user.name" },
+            {
+                "data": null, // Set to null to enable custom rendering
+                "render": function (data, type, row) {
+                    if (row.user && row.user.name) {
+                        return row.user.name; // If user exists and has an email, display it
+                    } else {
+                        return "guest";// Default email if user is null or email is missing
+                    }
+                }
+            },
+            {
+                "data": null, // Set to null to enable custom rendering
+                "render": function (data, type, row) {
+                    if (row.user && row.user.email) {
+                        return row.user.email; // If user exists and has an email, display it
+                    } else {
+                        return data.email;// Default email if user is null or email is missing
+                    }
+                }
+            },
             { "data": "service.name" },
             { "data": "message" },
             {
@@ -104,7 +124,7 @@ $(document).ready(function () {
         var appointmentId = $(this).data('id');
         var newStatus = $(this).val();
         var $dropdown = $(this); // Store reference to dropdown for later
-    
+
         // Use SweetAlert for confirmation
         Swal.fire({
             title: 'Are you sure?',
@@ -126,7 +146,7 @@ $(document).ready(function () {
                         Swal.showLoading();
                     }
                 });
-    
+
                 // User confirmed the change, send AJAX request
                 $.ajax({
                     url: '/admin-appointment/' + appointmentId, // Use resource route
@@ -138,7 +158,7 @@ $(document).ready(function () {
                     success: function (response) {
                         // Close the loading indicator
                         Swal.close();
-    
+
                         Swal.fire(
                             'Updated!',
                             'The status has been changed to ' + newStatus + '.',
@@ -149,7 +169,7 @@ $(document).ready(function () {
                     error: function (xhr, status, error) {
                         // Close the loading indicator
                         Swal.close();
-    
+
                         Swal.fire(
                             'Error!',
                             'There was an issue updating the status. Please try again.',
@@ -165,7 +185,7 @@ $(document).ready(function () {
             }
         });
     });
-    
+
     // Store original status value when dropdown is focused (before change)
     $(document).on('focus', '.status-dropdown', function () {
         $(this).data('original-status', $(this).val());

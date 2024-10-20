@@ -100,7 +100,7 @@
       </div> -->
 
 
-      <x-validation-errors class="mb-4" />
+                <x-validation-errors class="mb-4" />
 
                 <form method="POST" action="{{ route('login') }}" class="space-y-4">
                     @csrf
@@ -111,18 +111,25 @@
                     <div class="mt-4">
                         <x-label class="block text-sm font-medium text-gray-700" for="password" value="{{ __('Password') }}" />
                         <x-input id="password" class="mt-1 p-2 w-full border rounded-md focus:border-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 transition-colors duration-300" type="password" name="password" required autocomplete="current-password" />
+
+                        <!-- Forgot password link below the password input -->
+                        <div class="mt-2 text-right">
+                            <a href="{{ route('password.request') }}" class="text-sm text-gray-600 hover:underline">
+                                {{ __('Forgot password?') }}
+                            </a>
+                        </div>
                     </div>
                     <div>
-                        <button type="submit" class="w-full bg-black text-white p-2 rounded-md hover:bg-gray-800 focus:outline-none focus:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors duration-300"> {{ __('Log in') }}</button>
+                        <button type="submit" class="w-full bg-black text-white p-2 rounded-md hover:bg-gray-800 focus:outline-none focus:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors duration-300">
+                            {{ __('Log in') }}
+                        </button>
                     </div>
                 </form>
                 <div class="mt-4 text-sm text-gray-600 text-center">
-                    <!-- <p>Already have an account? <a href="#" class="text-black hover:underline">Login here</a> -->
-                    <p>Don't have an account? <a href="/register" class="text-black hover:underline">Register here</a>
-                    <p><a href="/" class="text-black hover:underline"><b>back to home<b></a>
-
-                    </p>
+                    <p>Don't have an account? <a href="/register" class="text-black hover:underline">Register here</a></p>
+                    <p><a href="/" class="text-black hover:underline"><b>Back to home</b></a></p>
                 </div>
+
             </div>
         </div>
     </div>

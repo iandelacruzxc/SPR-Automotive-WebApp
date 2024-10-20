@@ -70,9 +70,9 @@
         <nav class="bg-white text-black p-4">
             <div class="container mx-auto flex items-center justify-between">
                 <!-- Logo Section -->
-                <div class="flex items-center">
+                <div class="shrink-0 flex items-center">
                     <a href="/">
-                        <img src="{{ asset('images/logo.png') }}" alt="Logo" style="width: 250px; height: auto;">
+                        <img src="{{ asset('images/logo2.png') }}" alt="Logo" style="width: 150px; height: auto;">
                     </a>
                 </div>
                 <!-- Hamburger Menu Button -->
