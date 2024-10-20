@@ -22,7 +22,7 @@ class OptionController extends Controller
           switch ($model) {
               case 'products':
                   // Fetch products data and add to $data array
-                  $data['products'] = Products::select('id', 'name')->get();
+                  $data['products'] = Products::select('id', 'name', 'price')->get();
                   break;
   
               case 'mechanics':
@@ -31,13 +31,13 @@ class OptionController extends Controller
                       'id',
                       DB::raw("CONCAT(firstname, ' ', IFNULL(middlename, ''), ' ', lastname) AS fullname")
                   )
-                  ->where('status', 1)
+                  ->where('status', 0)
                   ->get();
                   break;
   
               case 'services':
                   // Fetch services data
-                  $data['services'] = Services::select('id', 'name')->get();
+                  $data['services'] = Services::select('id', 'name', 'price')->get();
                   break;
   
               default:

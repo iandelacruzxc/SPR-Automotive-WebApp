@@ -117,7 +117,7 @@
                     <select id="status" name="status"
                         class="mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm" required>
                         <option value="1">Active</option>
-                        <option value="2">Inactive</option>
+                        <option value="2" selected>Inactive</option>
                     </select>
                 </div>
                 {{-- <div class="mb-4">

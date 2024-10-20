@@ -43,7 +43,7 @@
                 </div>
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link href="{{ route('admin-appointment.index') }}" :active="request()->routeIs('admin-appointment.index')">
-                        {{ __('appointment') }}
+                        {{ __('Appointments') }}
                     </x-nav-link>
                 </div>
             </div>
@@ -205,7 +205,12 @@
         </div>
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link href="{{ route('transactions.index') }}" :active="request()->routeIs('transactions.index')">
-                {{ __('Transaction') }}
+                {{ __('Transactions') }}
+            </x-responsive-nav-link>
+        </div>
+        <div class="pt-2 pb-3 space-y-1">
+            <x-responsive-nav-link href="{{ route('admin-appointment.index') }}" :active="request()->routeIs('admin-appointment.index')">
+                {{ __('Appointments') }}
             </x-responsive-nav-link>
         </div>
 
