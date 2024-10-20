@@ -116,8 +116,8 @@
                     <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
                     <select id="status" name="status"
                         class="mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm" required>
-                        <option value="1">Active</option>
-                        <option value="2">Inactive</option>
+                        <option value="1">Working</option>
+                        <option value="2" selected>Stand-by</option>
                     </select>
                 </div>
                 {{-- <div class="mb-4">

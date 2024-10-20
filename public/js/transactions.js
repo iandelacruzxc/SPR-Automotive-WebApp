@@ -3,6 +3,7 @@ $(document).ready(function () {
         paging: true,
         processing: true,
         serverSide: true,
+        order: [[6, "desc"]],
         ajax: {
             url: "/transactions",
             type: "GET", // Use GET method for fetching data
@@ -39,22 +40,17 @@ $(document).ready(function () {
                     return `<span class="inline-block px-3 py-1 rounded-full text-xs font-semibold ${statusClass}">${statusText}</span>`;
                 },
             },
-
             {
                 data: null,
-                defaultContent: `
-                  <div class="flex space-x-2">
-                      <button class="view text-gray-500 hover:text-gray-700 mr-2" title="View">
-                          <i class="fas fa-eye"></i>
-                      </button>
-                      <button class="edit text-green-500 hover:text-gray-700 mr-2" title="Edit">
-                          <i class="fas fa-pencil-alt"></i>
-                      </button>
-                      <button class="delete text-red-600 hover:text-red-800" title="Delete">
-                          <i class="fas fa-trash-alt"></i>
-                      </button>
-                  </div>
-              `,
+                render: function (data, type, row) {
+                    return `
+                      <div class="flex justify-center space-x-2">
+                          <button class="view bg-blue-500 text-white hover:bg-blue-600 px-2 py-1 rounded-md" data-id="${row.id}" title="View">
+                              <i class="fas fa-eye"></i>
+                          </button>
+                      </div>
+                  `;
+                },
             },
         ],
         pageLength: 10, // Set default page length
@@ -68,20 +64,51 @@ $(document).ready(function () {
         url: "/options", // Assuming this is the route to the controller method
         method: "GET",
         data: {
-            models: ["products", "mechanics"],
+            models: ["products", "mechanics", "services"],
         },
         success: function (response) {
             console.log(response);
-            // response.products will contain the products data
-            // response.mechanics will contain the mechanics data
 
             var mechanicId = $("#mechanic_id");
             var mechanicOptions = response.mechanics.map(function (item) {
+                // Create a new option element
+                var option = $("<option></option>")
+                    .attr("value", item.id)
+                    .data("status", item.status);
+
+                // Check the status and disable the option if status is 1
+                if (item.status === 1) {
+                    option
+                        .attr("disabled", "disabled")
+                        .text(
+                            `Unavailable - ${item.fullname}(${item.position})`
+                        );
+                } else if (item.status === 2) {
+                    option.text(`${item.fullname}(${item.position})`);
+                }
+
+                return option;
+            });
+            mechanicId.append(mechanicOptions);
+            mechanicId.val($('#initMechanicId').val());
+
+            var serviceId = $("#service_id");
+            var serviceOptions = response.services.map(function (item) {
                 return $("<option></option>")
                     .attr("value", item.id)
-                    .text(item.fullname);
+                    .data("price", item.price)
+                    .text(`${item.name}`);
             });
-            mechanicId.append(mechanicOptions); // Append all options at once
+            serviceId.append(serviceOptions);
+
+            var productId = $("#product_id");
+            var productOptions = response.products.map(function (item) {
+                return $("<option></option>")
+                    .attr("value", item.id)
+                    .data("price", item.price)
+                    .text(`${item.name}`);
+            });
+            productId.append(productOptions); // Append all options at once
         },
         error: function (error) {
             console.log("Error:", error.responseJSON);
@@ -96,22 +123,16 @@ $(document).ready(function () {
         }
     });
 
+    $(document).on("click", ".view", function () {
+        var transactionId = $(this).data("id");
+        // Redirect to the show page for the selected product
+        window.location.href = "/transactions/" + transactionId;
+    });
+
     // Handle Form Submission
     $("#createTransactionForm").on("submit", function (e) {
         e.preventDefault();
-
-        var transactionId = $("#transactionId").val();
-        var url = transactionId
-            ? "/transactions/" + transactionId
-            : "/transactions"; // URL for update or create
-        var method = transactionId ? "POST" : "POST"; // Using POST; _method will handle it
-
         var formData = new FormData(this); // Using FormData to include files
-
-        if (transactionId) {
-            formData.append("_method", "PUT"); // Laravel requires this for PUT requests
-        }
-
         $.ajaxSetup({
             headers: {
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
@@ -119,8 +140,8 @@ $(document).ready(function () {
         });
 
         $.ajax({
-            url: url,
-            method: method, // Change this to method
+            url: "/transactions",
+            method: "POST", // Change this to method
             data: formData,
             contentType: false, // Prevent jQuery from setting the content-type header
             processData: false, // Prevent jQuery from processing the data
@@ -128,10 +149,8 @@ $(document).ready(function () {
                 $("#createModal").addClass("hidden");
                 Swal.fire({
                     icon: "success",
-                    title: transactionId ? "Updated!" : "Added!",
-                    text: transactionId
-                        ? "The transaction has been updated successfully."
-                        : "The transaction has been added successfully.",
+                    title: "Added!",
+                    text: "The transaction has been added successfully.",
                 }).then(() => {
                     // $('#createModal').addClass('hidden');
                     $("#createTransactionForm")[0].reset();
@@ -163,19 +182,6 @@ $(document).ready(function () {
         $("#createModal").addClass("hidden");
     });
 
-    // Close the view modal
-    $("#closeViewModal").on("click", function () {
-        $("#viewModal").addClass("hidden");
-    });
-
-    // Click outside to close open menus and modals
-    $(document).on("click", function (e) {
-        if (!$(e.target).closest(".view, .action-button").length) {
-            $(".action-menu").addClass("hidden");
-            $("#viewModal").addClass("hidden");
-        }
-    });
-
     // Handle action button clicks
     $("#example").on("click", "button", function (e) {
         e.preventDefault();
@@ -183,48 +189,6 @@ $(document).ready(function () {
         var rowData = table.row($(this).parents("tr")).data();
 
         switch (true) {
-            case action.includes("view"):
-                $("#transactionDetails").html(`
-                  <p><strong>Client Name:</strong> ${rowData.client_name}</p>
-                  <p><strong>Unit:</strong> ${rowData.unit}</p>
-                  <p><strong>Plate No.:</strong> ${rowData.plate_no}</p>
-                  <p><strong>Color:</strong> ${rowData.color}</p>
-                  <p><strong>Contact:</strong> ${rowData.contact}</p>
-                  <p><strong>Email:</strong> ${rowData.email}</p>
-                  <p><strong>Address:</strong> ${rowData.address}</p>
-                  <p><strong>Code:</strong> ${rowData.code}</p>
-                  <p><strong>Processed By:</strong> ${rowData.processed_by}</p>
-                  <p><strong>Mechanic:</strong> ${rowData.mechanic}</p>
-                  <p><strong>Downpayment:</strong> ${rowData.downpayment}</p>
-                  <p><strong>Balance:</strong> ${rowData.balance}</p>
-                  <p><strong>Amount:</strong> ${rowData.amount}</p>
-                  <p><strong>Date In:</strong> ${rowData.date_in}</p>
-                  <p><strong>Date Out:</strong> ${
-                      rowData.date_out ? rowData.date_out : "--"
-                  }</p>
-                  <p><strong>Status:</strong> ${rowData.status}</p>
-              `);
-                $("#viewModal").removeClass("hidden");
-                break;
-            case action.includes("edit"):
-                $("#modalTitle").text("Edit Transaction");
-                $("#transactionId").val(rowData.id);
-                $("#client_name").val(rowData.client_name);
-                $("#unit").val(rowData.unit);
-                $("#color").val(rowData.color);
-                $("#plate_no").val(rowData.plate_no);
-                $("#contact").val(rowData.contact);
-                $("#email").val(rowData.email);
-                $("#address").val(rowData.address);
-
-                // $("#code").val(rowData.code);
-                $("#mechanic_id").val(rowData.mechanic_id);
-                $("#downpayment").val(rowData.downpayment);
-                $("#date_in").val(rowData.date_in);
-                $("#date_out").val(rowData.date_out);
-                $("#status").val(rowData.status);
-                $("#createModal").removeClass("hidden");
-                break;
             case action.includes("delete"):
                 // SweetAlert2 confirmation
                 Swal.fire({
@@ -268,4 +232,124 @@ $(document).ready(function () {
         }
         $(this).closest(".action-menu").addClass("hidden");
     });
+
+    // Edit button click handler
+    $("#transaction_edit_btn").on("click", function () {
+        // Fetch the transaction details from the Laravel blade
+        const transaction = $("#transaction_edit_btn").data("transaction");
+
+        // Populate the modal fields
+        $("#editTransactionId").val(transaction.id);
+        $("#edit_client_name").val(transaction.client_name);
+        $("#edit_unit").val(transaction.unit);
+        $("#edit_plate_no").val(transaction.plate_no);
+        $("#edit_color").val(transaction.color);
+        $("#edit_address").val(transaction.address);
+        $("#edit_contact").val(transaction.contact);
+        $("#edit_email").val(transaction.email);
+        $("#edit_date_in").val(transaction.date_in);
+        $("#edit_status").val(transaction.status);
+
+        // Show the modal
+        $("#editModal").removeClass("hidden");
+    });
+
+    // Close modal handler
+    $("#closeEditModal").on("click", function () {
+        $("#editModal").addClass("hidden");
+    });
+
+    // Function to update the transaction view with new data
+    function updateTransactionView(transaction) {
+        // Iterate over each field and update its content
+        for (const [key, value] of Object.entries(transaction)) {
+            // Select the element based on the data-field attribute
+            const element = document.querySelector(`[data-field="${key}"]`);
+            if (element) {
+                element.textContent = value; // Update the text content
+            }
+        }
+    }
+    // Handle form submission with AJAX
+    $("#editTransactionForm").on("submit", function (e) {
+        e.preventDefault();
+
+        const transactionId = $("#editTransactionId").val();
+        const formData = $(this).serialize();
+
+        $.ajaxSetup({
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+        });
+
+        $.ajax({
+            url: `/transactions/${transactionId}`,
+            type: "PUT",
+            data: formData,
+            success: function (response) {
+                $("#editModal").addClass("hidden");
+                Swal.fire({
+                    icon: "success",
+                    title: "Updated!",
+                    text: "The transaction has been updated successfully.",
+                }).then(() => {
+                    $("#editModal").addClass("hidden");
+                    updateTransactionView(response.transaction); // Call the update function
+                    $("editTransactionForm")[0].reset();
+                    // table.ajax.reload(); // Reload the DataTable with new data
+                });
+            },
+            error: function (xhr) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error!",
+                    text:
+                        "Error occurred while saving the transaction. " +
+                        xhr.responseText,
+                });
+            },
+        });
+    });
+
+
+
+    $("#submitTransactionForm").on("submit", function (e) {
+      e.preventDefault();
+  
+      const submitTransactionId = $("#submitTransactionId").val();
+      let formData = $(this).serialize(); // Serialize the form
+  
+      // Append additional data manually
+      formData += '&submittal=true'; // Add submittal field
+  
+      $.ajaxSetup({
+          headers: {
+              "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+          },
+      });
+  
+      $.ajax({
+          url: `/transactions/${submitTransactionId}`,
+          type: "PUT", // Ensure you are using the correct HTTP method
+          data: formData,
+          success: function (response) {
+              Swal.fire({
+                  icon: "success",
+                  title: "Submitted!",
+                  text: "The transaction has been submitted successfully.",
+              });
+          },
+          error: function (xhr) {
+              Swal.fire({
+                  icon: "error",
+                  title: "Error!",
+                  text:
+                      "Error occurred while saving the transaction. " +
+                      xhr.responseText,
+              });
+          },
+      });
+  });
+  
 });

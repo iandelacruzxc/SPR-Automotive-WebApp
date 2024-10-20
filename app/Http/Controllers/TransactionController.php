@@ -103,9 +103,15 @@ class TransactionController extends Controller
     }
     return view('admin.transaction.transactions');
   }
+
+  public function show(Request $request, $id)
+  {
+    $transaction = Transaction::with(['products', 'services'])->findOrFail($id);
+    return view('admin.transaction.transaction-details', compact('transaction'));
+  }
+
   public function store(Request $request)
   {
-
     $transactionCode = $this->generateTransactionCode();
     // Validate the request
     $validated = $request->validate([
@@ -116,18 +122,19 @@ class TransactionController extends Controller
       'contact' => 'required|string',
       'email' => 'required|email',
       'address' => 'required|string',
-      'mechanic_id' => 'required|numeric',
-      'downpayment' => 'nullable|numeric',  // Validate downpayment as numeric
+      // 'mechanic_id' => 'required|numeric',
+      // 'downpayment' => 'nullable|numeric',  // Validate downpayment as numeric
       'date_in' => 'date',
-      'date_out' => 'date',
+      // 'date_out' => 'date',
       // 'code' => 'required|string',
       'status' => 'required|string',
     ]);
 
     // Format the downpayment to two decimal places (if it's provided)
-    $downpayment = $validated['downpayment'] !== null
-      ? number_format($validated['downpayment'], 2, '.', '')
-      : null;
+    // $downpayment = $validated['downpayment'] !== null
+    //   ? number_format($validated['downpayment'], 2, '.', '')
+    //   : null;
+
     // Create the new Transaction
     $transaction = Transaction::create([
       'user_id' => Auth::user()->id,
@@ -139,40 +146,61 @@ class TransactionController extends Controller
       'email' => $validated['email'],
       'address' => $validated['address'],
       'code' => $transactionCode,
-      'mechanic_id' => $validated['mechanic_id'],
-      'downpayment' => $downpayment,  // Save downpayment with correct format
+      // 'mechanic_id' => $validated['mechanic_id'],
+      'downpayment' => 0,  // Save downpayment with correct format
       'date_in' => $validated['date_in'],
-      'date_out' => $validated['date_out'],
+      // 'date_out' => $validated['date_out'],
       'amount' => 0,                  // You can adjust this logic as needed
       'status' => $validated['status'],
     ]);
     return response()->json(['success' => true]);
   }
   public function update(Request $request, $id)
-  {
-    // Validate and update existing Transaction
-    $validatedData = $request->validate([
-      // 'user_id' => 'required|numeric',
-      'client_name' => 'required|string',
-      'unit' => 'required|string',
-      'plate_no' => 'required|string',
-      'color' => 'required|string',
-      'contact' => 'required|string',
-      'email' => 'required|string',
-      'address' => 'required|string',
-      // 'code' => 'required|string',
-      'mechanic_id' => 'required|numeric',
-      'downpayment' => 'decimal:2|nullable',
-      'date_in' => 'date|nullable',
-      'date_out' => 'date|nullable',
-      // 'amount' => 'required',
-      'status' => 'required',
-    ]);
+  {   // Fetch the transaction to update
     $transaction = Transaction::findOrFail($id);
-    $transaction->update($validatedData);
-    return response()->json(['message' => 'Transaction updated successfully.']);
+
+    // Check if the form is submitted to update the transaction
+    if ($request['submittal'] == true) {
+      // Validate the request for submitting the transaction
+      $validatedData = $request->validate([
+        'mechanic_id' => 'nullable|numeric|exists:mechanics,id',
+        'downpayment' => 'decimal:2|nullable',
+        'date_out' => 'date|nullable',
+        // Make all other fields optional for this request
+      ]);
+
+      // Fill only the fields that were validated
+      $transaction->fill($validatedData);
+    } else {
+      // Validate the request for all required fields when not submitting
+      $validatedData = $request->validate([
+        'client_name' => 'required|string',
+        'unit' => 'required|string',
+        'plate_no' => 'required|string',
+        'color' => 'required|string',
+        'contact' => 'required|string',
+        'email' => 'required|string',
+        'address' => 'required|string',
+        'downpayment' => 'decimal:2|nullable',
+        'date_in' => 'date|nullable',
+        'date_out' => 'date|nullable',
+        'status' => 'required|string',
+      ]);
+
+      // Fill the transaction with validated data
+      $transaction->fill($validatedData);
+    }
+
+    // Save the changes to the transaction
+    $transaction->save();
+
+    // Return the response
+    return response()->json([
+      'transaction' => $transaction,
+      'message' => $request['submittal'] == true ? 'Transaction submitted successfully.' : 'Transaction updated successfully.'
+    ]);
   }
-  // app/Http/Controllers/TransactionController.php
+
   public function destroy($id)
   {
     $transaction = Transaction::findOrFail($id);

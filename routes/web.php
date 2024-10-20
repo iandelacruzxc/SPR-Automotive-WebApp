@@ -13,6 +13,8 @@ use App\Http\Controllers\OptionController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ServiceManagementController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\TransactionProductController;
+use App\Http\Controllers\TransactionServiceController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,7 +27,6 @@ Route::post('guest/appointment', [HomeController::class, 'store']);
 // Route::get('/email/verify/{id}', [VerificationController::class, 'verify'])->name('verification.verify')->middleware('signed');
 // Route::post('/email/resend', [VerificationController::class, 'resend'])->name('verification.resend');
 Route::get('/email/verify/{id}/{hash}', [AuthenticatedSessionController::class, 'verifyEmail'])->name('email.verify');
-
 
 
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function () {
@@ -55,6 +56,8 @@ Route::middleware(['auth'])->group(function () {
   Route::resource('products', ProductManagementController::class)->except(['create', 'edit']);
   Route::resource('inventory', InventoryController::class)->except(['create', 'edit']);
   Route::resource('transactions', TransactionController::class)->except(['create', 'edit']);
+  Route::resource('transaction-services', TransactionServiceController::class)->except(['create', 'edit']);
+  Route::resource('transaction-products', TransactionProductController::class)->except(['create', 'edit']);
   Route::get('/options', [OptionController::class, 'getOptions']);
   Route::get('/mechanics', [MechanicController::class, 'index'])->name('admin.mechanics');
   Route::get('/mechanics/data', [MechanicController::class, 'getData']);
@@ -63,7 +66,9 @@ Route::middleware(['auth'])->group(function () {
   Route::delete('/mechanics/delete/{id}', [MechanicController::class, 'destroy']);
 
   Route::resource('admin-appointment', AppointmentAdminController::class)->except(['create', 'edit']);
-
+  // Route::get('/admin/transaction/details', function () {
+  //   return view('admin.transaction.transaction-details');
+  // });
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -74,8 +79,7 @@ Route::middleware(['auth'])->group(function () {
   Route::post('/user/cart/update/{id}', [UserController::class, 'updateQuantity'])->name('cart.update');
   Route::get('/cart', [UserController::class, 'viewCart'])->name('cart.index');
 
-// Resource route for appointments
-Route::resource('user/appointment', AppointmentController::class)->except(['create', 'edit']);
-Route::get('/user/appointment-history', [AppointmentController::class, 'history'])->name('user.history');
-
+  // Resource route for appointments
+  Route::resource('user/appointment', AppointmentController::class)->except(['create', 'edit']);
+  Route::get('/user/appointment-history', [AppointmentController::class, 'history'])->name('user.history');
 });
