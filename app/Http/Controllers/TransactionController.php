@@ -107,59 +107,6 @@ class TransactionController extends Controller
   public function show(Request $request, $id)
   {
     $transaction = Transaction::with(['products', 'services'])->findOrFail($id);
-    // if ($request->ajax()) {
-    //     // Fetching parameters for DataTable
-    //     $draw = $request->input('draw');
-    //     $start = $request->input('start');
-    //     $length = $request->input('length');
-    //     $searchValue = $request->input('search.value');
-    //     $orderColumn = $request->input('order.0.column');
-    //     $orderDir = $request->input('order.0.dir');
-
-    //     // Define the columns for ordering
-    //     $columns = ['stock_date', 'quantity']; // Adjust as necessary for inventory columns
-
-    //     // Build the query for inventory related to the product
-    //     $query = Transaction::where('product_id', $id);
-
-    //     // Apply search filter if applicable
-    //     if ($searchValue) {
-    //         $query->where(function($q) use ($searchValue) {
-    //             $q->where('stock_date', 'like', "%$searchValue%")
-    //               ->orWhere('quantity', 'like', "%$searchValue%");
-    //         });
-    //     }
-
-    //     // Get total records after filtering
-    //     $filteredCount = $query->count();
-
-    //     // Apply sorting
-    //     if (isset($columns[$orderColumn])) {
-    //         $query->orderBy($columns[$orderColumn], $orderDir);
-    //     }
-
-    //     // Apply pagination
-    //     $inventories = $query->limit($length)->offset($start)->get(); // Ensure correct pagination
-
-    //     // Get total records before filtering
-    //     $totalCount = Inventory::where('product_id', $id)->count();
-
-    //     // Prepare the response in the format DataTables expects
-    //     return response()->json([
-    //         'draw' => intval($draw),
-    //         'recordsTotal' => intval($totalCount),
-    //         'recordsFiltered' => intval($filteredCount),
-    //         'data' => $inventories->map(function ($item) {
-    //             return [
-    //                 'stock_date' => $item->stock_date,
-    //                 'quantity' => $item->quantity,
-    //             ];
-    //         })
-    //     ]);
-    // }
-
-    // Fetch the product with its associated inventory for display
-    // $product = Products::with('inventory')->findOrFail($id);
     return view('admin.transaction.transaction-details', compact('transaction'));
   }
 
@@ -209,34 +156,51 @@ class TransactionController extends Controller
     return response()->json(['success' => true]);
   }
   public function update(Request $request, $id)
-  {
-    // Validate and update existing Transaction
-    $validatedData = $request->validate([
-      // 'user_id' => 'required|numeric',
-      'client_name' => 'required|string',
-      'unit' => 'required|string',
-      'plate_no' => 'required|string',
-      'color' => 'required|string',
-      'contact' => 'required|string',
-      'email' => 'required|string',
-      'address' => 'required|string',
-      // 'code' => 'required|string',
-      // 'mechanic_id' => 'required|numeric',
-      'downpayment' => 'decimal:2|nullable',
-      'date_in' => 'date|nullable',
-      'date_out' => 'date|nullable',
-      // 'amount' => 'required',
-      'status' => 'required',
-    ]);
+  {   // Fetch the transaction to update
     $transaction = Transaction::findOrFail($id);
-    $transaction->update($validatedData);
 
+    // Check if the form is submitted to update the transaction
+    if ($request['submittal'] == true) {
+      // Validate the request for submitting the transaction
+      $validatedData = $request->validate([
+        'mechanic_id' => 'nullable|numeric|exists:mechanics,id',
+        'downpayment' => 'decimal:2|nullable',
+        'date_out' => 'date|nullable',
+        // Make all other fields optional for this request
+      ]);
+
+      // Fill only the fields that were validated
+      $transaction->fill($validatedData);
+    } else {
+      // Validate the request for all required fields when not submitting
+      $validatedData = $request->validate([
+        'client_name' => 'required|string',
+        'unit' => 'required|string',
+        'plate_no' => 'required|string',
+        'color' => 'required|string',
+        'contact' => 'required|string',
+        'email' => 'required|string',
+        'address' => 'required|string',
+        'downpayment' => 'decimal:2|nullable',
+        'date_in' => 'date|nullable',
+        'date_out' => 'date|nullable',
+        'status' => 'required|string',
+      ]);
+
+      // Fill the transaction with validated data
+      $transaction->fill($validatedData);
+    }
+
+    // Save the changes to the transaction
+    $transaction->save();
+
+    // Return the response
     return response()->json([
       'transaction' => $transaction,
-      'message' => 'Transaction updated successfully.'
+      'message' => $request['submittal'] == true ? 'Transaction submitted successfully.' : 'Transaction updated successfully.'
     ]);
   }
-  // app/Http/Controllers/TransactionController.php
+
   public function destroy($id)
   {
     $transaction = Transaction::findOrFail($id);

@@ -3,6 +3,7 @@ $(document).ready(function () {
         paging: true,
         processing: true,
         serverSide: true,
+        order: [[6, "desc"]],
         ajax: {
             url: "/transactions",
             type: "GET", // Use GET method for fetching data
@@ -70,11 +71,26 @@ $(document).ready(function () {
 
             var mechanicId = $("#mechanic_id");
             var mechanicOptions = response.mechanics.map(function (item) {
-                return $("<option></option>")
+                // Create a new option element
+                var option = $("<option></option>")
                     .attr("value", item.id)
-                    .text(item.fullname);
+                    .data("status", item.status);
+
+                // Check the status and disable the option if status is 1
+                if (item.status === 1) {
+                    option
+                        .attr("disabled", "disabled")
+                        .text(
+                            `Unavailable - ${item.fullname}(${item.position})`
+                        );
+                } else if (item.status === 2) {
+                    option.text(`${item.fullname}(${item.position})`);
+                }
+
+                return option;
             });
             mechanicId.append(mechanicOptions);
+            mechanicId.val($('#initMechanicId').val());
 
             var serviceId = $("#service_id");
             var serviceOptions = response.services.map(function (item) {
@@ -295,4 +311,45 @@ $(document).ready(function () {
             },
         });
     });
+
+
+
+    $("#submitTransactionForm").on("submit", function (e) {
+      e.preventDefault();
+  
+      const submitTransactionId = $("#submitTransactionId").val();
+      let formData = $(this).serialize(); // Serialize the form
+  
+      // Append additional data manually
+      formData += '&submittal=true'; // Add submittal field
+  
+      $.ajaxSetup({
+          headers: {
+              "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+          },
+      });
+  
+      $.ajax({
+          url: `/transactions/${submitTransactionId}`,
+          type: "PUT", // Ensure you are using the correct HTTP method
+          data: formData,
+          success: function (response) {
+              Swal.fire({
+                  icon: "success",
+                  title: "Submitted!",
+                  text: "The transaction has been submitted successfully.",
+              });
+          },
+          error: function (xhr) {
+              Swal.fire({
+                  icon: "error",
+                  title: "Error!",
+                  text:
+                      "Error occurred while saving the transaction. " +
+                      xhr.responseText,
+              });
+          },
+      });
+  });
+  
 });

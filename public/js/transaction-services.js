@@ -46,19 +46,19 @@ $(document).ready(function () {
     });
 
     $("#product_id").on("change", function () {
-      // Get the selected option
-      var selectedOption = $(this).find("option:selected");
+        // Get the selected option
+        var selectedOption = $(this).find("option:selected");
 
-      // Get the price from the data attribute of the selected option
-      var selectedPrice = selectedOption.data("price");
+        // Get the price from the data attribute of the selected option
+        var selectedPrice = selectedOption.data("price");
 
-      // Update the price input with the selected price
-      if (selectedPrice) {
-          $("#p_price").val(selectedPrice);
-      } else {
-          $("#p_price").val(""); // Clear the price if no service is selected
-      }
-  });
+        // Update the price input with the selected price
+        if (selectedPrice) {
+            $("#p_price").val(selectedPrice);
+        } else {
+            $("#p_price").val(""); // Clear the price if no service is selected
+        }
+    });
 
     // Handle action button clicks
     $("#serviceTable").on("click", "button", function (e) {
@@ -93,6 +93,8 @@ $(document).ready(function () {
                                     "The service has been removed.",
                                     "success"
                                 );
+
+                                $("#amount").val(response.amount);
                                 serviceTable.ajax.reload();
                             },
                             error: function (xhr) {
@@ -140,9 +142,8 @@ $(document).ready(function () {
                     title: "Added",
                     text: "Service added successfully.",
                 }).then(() => {
-                    // $('#createModal').addClass('hidden'); // Hide the modal
-
                     $("#addTransactionServiceForm")[0].reset(); // Reset the form
+                    $("#amount").val(response.amount);
                     serviceTable.ajax.reload(); // Reload the DataTable with new data
                 });
             },

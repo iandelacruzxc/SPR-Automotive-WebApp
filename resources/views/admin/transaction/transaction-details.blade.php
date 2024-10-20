@@ -37,7 +37,7 @@
                         </div>
                     </div>
                     <input type="hidden" id="transactionId" name="transactionId" value="{{ $transaction->id }}">
-                    <div class="grid md:grid-cols-2 items-start">
+                    <div class="grid md:grid-cols-2 md:items-start w-full">
                         <div class="grid grid-cols-2 gap-y-1">
                             <div class="px-4 font-semibold text-gray-800">Transaction Code:</div>
                             <div class="px-4 text-gray-500" data-field="code">{{ $transaction->code }}
@@ -74,8 +74,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="grid md:grid-cols-2 gap-2">
-                    <div class="border rounded p-4 mb-2">
+                <div class="grid md:grid-cols-2 md:gap-2 w-full">
+                    <div class="border rounded p-4 mb-2 overflow-auto">
                         <div class="flex justify-between items-center mb-2">
                             <div class="text-lg font-bold">Services</div>
                             <button id="addServiceButton"
@@ -93,7 +93,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="border rounded p-4 mb-2">
+                    <div class="border rounded p-4 mb-2 overflow-auto">
                         <div class="flex justify-between items-center mb-2">
                             <div class="text-lg font-bold">Products</div>
                             <button id="addProductButton"
@@ -115,13 +115,48 @@
                     </div>
                 </div>
                 <div class="mt-4">
-                    <div class="">
-                        <label for="mechanic_id" class="block text-sm text-gray-700">Mechanic</label>
-                        <select id="mechanic_id" name="mechanic_id"
-                            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm" required>
-                            <option value="" selected>--</option>
-                        </select>
-                    </div>
+                    <input type="hidden" id="initMechanicId" name="initMechanicId"
+                        value="{{ $transaction->mechanic_id }}">
+                    <form id="submitTransactionForm">
+                        <input type="hidden" id="submitTransactionId" name="submitTransactionId"
+                            value="{{ $transaction->id }}">
+                        <div class="grid grid-cols-2 gap-2 mb-4">
+                            <div class="">
+                                <label for="mechanic_id" class="block text-sm font-bold text-gray-700">Assigned
+                                    Mechanic</label>
+                                <select id="mechanic_id" name="mechanic_id"
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm" required>
+                                    <option value="" selected>--</option>
+                                </select>
+                            </div>
+                            <div class="">
+                                <label for="date_out" class="block text-sm text-gray-700">Date Out</label>
+                                <input type="datetime-local" id="date_out" name="date_out"
+                                    value="{{ $transaction->date_out }}"
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm">
+                            </div>
+                            <div>
+                                <label for="downpayment"
+                                    class="block text-sm font-bold text-gray-700">Downpayment</label>
+                                <input type="number" id="downpayment" name="downpayment"
+                                    value="{{ $transaction->downpayment }}"
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm"
+                                    min="0" max="{{ $transaction->amount }}" required>
+                            </div>
+                            <div>
+                                <label for="amount" class="block text-sm font-bold text-gray-700">Total</label>
+                                <input type="number" id="amount" name="amount"
+                                    value="{{ $transaction->amount }}"
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm" readonly>
+                            </div>
+                        </div>
+                        <div class="flex justify-end">
+                            <button type="submit"
+                                class="inline-block bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
+                                Submit
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
