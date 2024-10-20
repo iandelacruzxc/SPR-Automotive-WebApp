@@ -1,4 +1,7 @@
     <!-- Modal -->
+
+    <input type="hidden" id="editTransactionId" name="transactionId">
+
     <div id="createModal" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center hidden">
         <div class="bg-white p-4 rounded-lg shadow-lg max-w-5xl w-full">
             <h3 id="modalTitle" class="text-lg font-bold mb-4">Add New Transaction</h3>
@@ -102,7 +105,6 @@
             <h3 id="editModalTitle" class="text-lg font-bold mb-4">Edit Transaction</h3>
             <form id="editTransactionForm">
                 <div id="editModalBody" class="h-[28rem] pl-4 overflow-y-scroll">
-                    <input type="hidden" id="editTransactionId" name="transactionId">
                     <!-- Form fields (same as the create modal, but with different IDs for the inputs) -->
                     <div class="font-semibold mb-4">Client Information</div>
                     <div class="grid grid-cols-2 gap-2 mb-8">
@@ -188,12 +190,12 @@
                     <div class="mb-2">
                         <label for="p_price" class="block text-sm text-gray-700">Price</label>
                         <input type="number" id="p_price" name="p_price"
-                            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm" readonly
-                            required>
+                            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm"
+                            placeholder="0.00" readonly required>
                     </div>
                     <div class="mb-2">
                         <label for="quantity" class="block text-sm text-gray-700">Quantity</label>
-                        <input type="number" id="quantity" name="quantity"
+                        <input type="number" id="quantity" name="quantity" value="1"
                             class="mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm" required>
                     </div>
                 </div>
@@ -222,8 +224,8 @@
                     <div class="">
                         <label for="price" class="block text-sm text-gray-700">Price</label>
                         <input type="number" id="price" name="price"
-                            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm" readonly
-                            required>
+                            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm"
+                            placeholder="0.00" readonly required>
                     </div>
                 </div>
                 <div class="flex justify-end border-t-1 pt-2">

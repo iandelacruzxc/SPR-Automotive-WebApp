@@ -65,6 +65,7 @@ $(document).ready(function () {
                                     "The product has been removed.",
                                     "success"
                                 );
+                                $("#amount").val(response.amount);
                                 productTable.ajax.reload();
                             },
                             error: function (xhr) {
@@ -114,7 +115,9 @@ $(document).ready(function () {
                 }).then(() => {
                     // $('#createModal').addClass('hidden'); // Hide the modal
 
-                    $("#addTransactionProductForm")[0].reset(); // Reset the form
+                    $("#addTransactionProductForm")[0].reset();
+                    $("#amount").val(response.amount);
+                    // Reset the form
                     productTable.ajax.reload(); // Reload the DataTable with new data
                 });
             },

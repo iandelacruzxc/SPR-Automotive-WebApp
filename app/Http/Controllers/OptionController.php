@@ -29,9 +29,11 @@ class OptionController extends Controller
                   // Fetch mechanics data with concatenated name
                   $data['mechanics'] = Mechanic::select(
                       'id',
-                      DB::raw("CONCAT(firstname, ' ', IFNULL(middlename, ''), ' ', lastname) AS fullname")
+                      DB::raw("CONCAT(firstname, ' ', IFNULL(middlename, ''), ' ', lastname) AS fullname"),
+                      'status',
+                      'position'
                   )
-                  ->where('status', 0)
+                  // ->where('status', 2)
                   ->get();
                   break;
   

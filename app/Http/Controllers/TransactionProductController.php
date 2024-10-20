@@ -33,20 +33,32 @@ class TransactionProductController extends Controller
   {
     // Validate the request
     $validated = $request->validate([
-      'p_price' => 'decimal:2',
-      'quantity' => 'integer',
+      'p_price' => 'required|decimal:2', // Ensure p_price is required and valid
+      'quantity' => 'required|integer',   // Ensure quantity is required and valid
+      'transaction_id' => 'required|exists:transactions,id', // Ensure transaction_id exists
+      'product_id' => 'required|exists:products,id',         // Ensure product_id exists
     ]);
 
     // Create the new service
     $transaction_product = TransactionProduct::create([
-      'transaction_id' => $request['transaction_id'],
-      'product_id' => $request['product_id'],
+      'transaction_id' => $validated['transaction_id'],
+      'product_id' => $validated['product_id'],
       'quantity' => $validated['quantity'],
       'price' => $validated['quantity'] * $validated['p_price'],
     ]);
 
-    return response()->json(['success' => true]);
+    // Retrieve the associated transaction
+    $transaction = Transaction::find($validated['transaction_id']);
+
+    // Increment the amount column
+    $transaction->amount += $transaction_product->price;
+
+    // Save the updated transaction
+    $transaction->save();
+
+    return response()->json(['success' => true, 'amount' => $transaction->amount]);
   }
+
 
 
   /**
@@ -141,9 +153,21 @@ class TransactionProductController extends Controller
 
   public function destroy(string $id)
   {
-    $transaction_service = TransactionProduct::findOrFail($id);
-    $transaction_service->delete();
+    // Find the transaction product or fail if not found
+    $transaction_product = TransactionProduct::findOrFail($id);
 
-    return response()->json(['success' => true]);
+    // Retrieve the associated transaction
+    $transaction = Transaction::find($transaction_product->transaction_id);
+
+    // Decrement the amount column
+    $transaction->amount -= $transaction_product->price;
+
+    // Save the updated transaction
+    $transaction->save();
+
+    // Delete the transaction product
+    $transaction_product->delete();
+
+    return response()->json(['success' => true, 'amount' => $transaction->amount]);
   }
 }

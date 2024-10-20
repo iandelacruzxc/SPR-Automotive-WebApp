@@ -22,11 +22,11 @@ $(document).ready(function () {
                     var statusText = "";
                     var statusClass = "";
                     if (data == 1) {
-                        statusText = "Active";
+                        statusText = "Working";
                         statusClass =
                             "bg-green-500 text-white border border-green-700"; // Tailwind class for green background with a border
                     } else if (data == 2) {
-                        statusText = "Inactive";
+                        statusText = "Stand-by";
                         statusClass =
                             "bg-red-500 text-white border border-red-700"; // Tailwind class for red background with a border
                     }
