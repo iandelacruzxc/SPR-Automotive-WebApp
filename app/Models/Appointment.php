@@ -16,6 +16,7 @@ class Appointment extends Model
         'message',
         'service_id',
         'email',
+        'status',
     ];
 
     // Optionally, you can define relationships
