@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\StatusUpdateMail;
 use Illuminate\Http\Request;
 use App\Models\Transaction;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class TransactionController extends Controller
 {
@@ -110,6 +112,8 @@ class TransactionController extends Controller
     return view('admin.transaction.transaction-details', compact('transaction'));
   }
 
+  
+
   public function store(Request $request)
   {
     $transactionCode = $this->generateTransactionCode();
@@ -158,7 +162,7 @@ class TransactionController extends Controller
   public function update(Request $request, $id)
   {   // Fetch the transaction to update
     $transaction = Transaction::findOrFail($id);
-
+    $oldStatus = $transaction->status; // Store the old status
     // Check if the form is submitted to update the transaction
     if ($request['submittal'] == true) {
       // Validate the request for submitting the transaction
@@ -187,12 +191,19 @@ class TransactionController extends Controller
         'status' => 'required|string',
       ]);
 
+
       // Fill the transaction with validated data
       $transaction->fill($validatedData);
     }
 
     // Save the changes to the transaction
     $transaction->save();
+
+      // Check if the status has changed
+    if ($oldStatus !== $transaction->status) {
+        // Send email notification
+        Mail::to($transaction->email)->send(new StatusUpdateMail($transaction));
+    }
 
     // Return the response
     return response()->json([

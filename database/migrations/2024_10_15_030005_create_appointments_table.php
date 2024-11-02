@@ -13,7 +13,7 @@ class CreateAppointmentsTable extends Migration
             $table->string('title'); // Title of the appointment
             $table->text('description')->nullable(); // Optional description
             $table->dateTime('appointment_date'); // Date and time of the appointment
-            $table->enum('status', ['pending', 'confirmed', 'completed', 'canceled'])->default('pending'); // Appointment status
+            $table->enum('status', ['pending', 'confirmed', 'completed', 'canceled']);
             $table->timestamps(); // Created at and updated at
             
             // Foreign key constraint

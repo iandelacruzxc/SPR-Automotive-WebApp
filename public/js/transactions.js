@@ -277,6 +277,16 @@ $(document).ready(function () {
         const transactionId = $("#editTransactionId").val();
         const formData = $(this).serialize();
 
+        // Show loading alert
+        Swal.fire({
+            title: 'Updating...',
+            text: 'Please wait while we update the status.',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
         $.ajaxSetup({
             headers: {
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
@@ -288,6 +298,8 @@ $(document).ready(function () {
             type: "PUT",
             data: formData,
             success: function (response) {
+                // Close the loading alert
+                Swal.close();
                 $("#editModal").addClass("hidden");
                 Swal.fire({
                     icon: "success",
@@ -296,8 +308,49 @@ $(document).ready(function () {
                 }).then(() => {
                     $("#editModal").addClass("hidden");
                     updateTransactionView(response.transaction); // Call the update function
-                    $("editTransactionForm")[0].reset();
+                    $("#editTransactionForm")[0].reset();
                     // table.ajax.reload(); // Reload the DataTable with new data
+                });
+            },
+            error: function (xhr) {
+                // Close the loading alert
+                Swal.close();
+                Swal.fire({
+                    icon: "error",
+                    title: "Error!",
+                    text: "Error occurred while saving the transaction. " + xhr.responseText,
+                });
+            },
+        });
+    });
+
+
+
+
+    $("#submitTransactionForm").on("submit", function (e) {
+        e.preventDefault();
+
+        const submitTransactionId = $("#submitTransactionId").val();
+        let formData = $(this).serialize(); // Serialize the form
+
+        // Append additional data manually
+        formData += '&submittal=true'; // Add submittal field
+
+        $.ajaxSetup({
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+        });
+
+        $.ajax({
+            url: `/transactions/${submitTransactionId}`,
+            type: "PUT", // Ensure you are using the correct HTTP method
+            data: formData,
+            success: function (response) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Submitted!",
+                    text: "The transaction has been submitted successfully.",
                 });
             },
             error: function (xhr) {
@@ -312,44 +365,4 @@ $(document).ready(function () {
         });
     });
 
-
-
-    $("#submitTransactionForm").on("submit", function (e) {
-      e.preventDefault();
-  
-      const submitTransactionId = $("#submitTransactionId").val();
-      let formData = $(this).serialize(); // Serialize the form
-  
-      // Append additional data manually
-      formData += '&submittal=true'; // Add submittal field
-  
-      $.ajaxSetup({
-          headers: {
-              "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
-          },
-      });
-  
-      $.ajax({
-          url: `/transactions/${submitTransactionId}`,
-          type: "PUT", // Ensure you are using the correct HTTP method
-          data: formData,
-          success: function (response) {
-              Swal.fire({
-                  icon: "success",
-                  title: "Submitted!",
-                  text: "The transaction has been submitted successfully.",
-              });
-          },
-          error: function (xhr) {
-              Swal.fire({
-                  icon: "error",
-                  title: "Error!",
-                  text:
-                      "Error occurred while saving the transaction. " +
-                      xhr.responseText,
-              });
-          },
-      });
-  });
-  
 });

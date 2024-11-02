@@ -1,7 +1,7 @@
 @php
-    use Carbon\Carbon;
-    // Parse the date and format it to 'F j, Y, g:i A'
-    $formattedDateIn = Carbon::parse($transaction->date_in)->format('F j, Y, g:i A');
+use Carbon\Carbon;
+// Parse the date and format it to 'F j, Y, g:i A'
+$formattedDateIn = Carbon::parse($transaction->date_in)->format('F j, Y, g:i A');
 @endphp
 <x-app-layout>
     <x-slot name="header">
@@ -25,7 +25,19 @@
                         </svg>
                         Back
                     </a>
+                    <button onclick="window.open('/invoice/{{ $transaction->id }}', '_blank')"
+                        class="inline-flex items-center bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 10v6a2 2 0 01-2 2H7a2 2 0 01-2-2v-6M5 10h14l1.88 6.63A2 2 0 0119 20H5a2 2 0 01-1.88-3.37L5 10zm14 0V7a5 5 0 00-5-5h-4a5 5 0 00-5 5v3" />
+                        </svg>
+                        Print Invoice
+                    </button>
+
+
+
                 </div>
+
                 <div class="border rounded p-4 mb-4">
                     <div class="flex justify-between items-center mb-2">
                         <div class="text-lg font-bold">General Information</div>
@@ -44,33 +56,41 @@
                             </div>
                             <div class="px-4 font-semibold text-gray-800">Name:</div>
                             <div class="px-4 text-gray-500" data-field="client_name">
-                                {{ $transaction->client_name }}</div>
+                                {{ $transaction->client_name }}
+                            </div>
                             <div class="px-4 font-semibold text-gray-800">Unit/Model:</div>
                             <div class="px-4 text-gray-500" data-field="unit">{{ $transaction->unit }}
                             </div>
                             <div class="px-4 font-semibold text-gray-800">Color:</div>
                             <div class="px-4 text-gray-500" data-field="color">
-                                {{ $transaction->color }}</div>
+                                {{ $transaction->color }}
+                            </div>
                             <div class="px-4 font-semibold text-gray-800">Plate No.:</div>
                             <div class="px-4 text-gray-500" data-field="plate_no">
-                                {{ $transaction->plate_no }}</div>
+                                {{ $transaction->plate_no }}
+                            </div>
                         </div>
                         <div class="grid grid-cols-2 gap-y-1">
                             <div class="px-4 font-semibold text-gray-800">Address:</div>
                             <div class="px-4 text-gray-500" data-field="address">
-                                {{ $transaction->address }}</div>
+                                {{ $transaction->address }}
+                            </div>
                             <div class="px-4 font-semibold text-gray-800">Phone No.:</div>
                             <div class="px-4 text-gray-500" data-field="contact">
-                                {{ $transaction->contact }}</div>
+                                {{ $transaction->contact }}
+                            </div>
                             <div class="px-4 font-semibold text-gray-800">Email:</div>
                             <div class="px-4 text-gray-500" data-field="email">
-                                {{ $transaction->email }}</div>
+                                {{ $transaction->email }}
+                            </div>
                             <div class="px-4 font-semibold text-gray-800">Date In:</div>
                             <div class="px-4 text-gray-500" data-field="date_in">
-                                {{ $formattedDateIn }}</div>
+                                {{ $formattedDateIn }}
+                            </div>
                             <div class="px-4 font-semibold text-gray-800">Status:</div>
                             <div class="px-4 text-gray-500" data-field="status">
-                                {{ $transaction->status }}</div>
+                                {{ $transaction->status }}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -165,8 +185,8 @@
     @include('admin.transaction.modal')
 
     @push('scripts')
-        <script src="{{ asset('js/transactions.js') }}"></script>
-        <script src="{{ asset('js/transaction-services.js') }}"></script>
-        <script src="{{ asset('js/transaction-products.js') }}"></script>
+    <script src="{{ asset('js/transactions.js') }}"></script>
+    <script src="{{ asset('js/transaction-services.js') }}"></script>
+    <script src="{{ asset('js/transaction-products.js') }}"></script>
     @endpush
 </x-app-layout>

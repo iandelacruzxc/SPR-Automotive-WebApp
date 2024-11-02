@@ -9,17 +9,19 @@
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4">
             @foreach($services as $service)
-            <div class="bg-white rounded-lg shadow-lg overflow-hidden transition-transform duration-300 transform hover:scale-105 flex flex-col items-center p-4">
+            <a href="{{ url('/user/appointment?service_id=' . $service->id) }}" class="bg-white rounded-lg shadow-lg overflow-hidden transition-transform duration-300 transform hover:scale-105 flex flex-col items-center p-4">
                 <div class="text-blue-500 text-4xl mb-2">
-                    <i class="fas fa-cog"></i> <!-- Replace with your preferred icon -->
+                    <i class="fas fa-cog"></i>
                 </div>
                 <div class="p-4 text-center">
                     <h2 class="text-xl font-bold text-gray-800 hover:text-blue-600 transition duration-200">{{ $service->name }}</h2>
                     <p class="mt-2 text-gray-600">{{ $service->description }}</p>
                 </div>
-            </div>
+            </a>
+
             @endforeach
         </div>
+
     </section>
 
 
