@@ -144,7 +144,7 @@ $(document).ready(function () {
                     <p><strong>Position:</strong> ${rowData.position}</p>
                     <p><strong>Rate:</strong> ${rowData.rate}</p>
                     <p><strong>Status:</strong> ${
-                        rowData.status ? "Active" : "Inactive"
+                        rowData.status === 1 ? "Working" : "Stand-By"
                     }</p>
                 `);
                 $("#viewModal").removeClass("hidden");

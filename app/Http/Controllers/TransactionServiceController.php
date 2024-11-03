@@ -25,33 +25,37 @@ class TransactionServiceController extends Controller
   /**
    * Store a newly created resource in storage.
    */
-
   public function store(Request $request)
   {
     // Validate the request
     $validated = $request->validate([
-      'price' => 'required|decimal:2', // Ensure price is required and valid
+      'price' => 'required|numeric|decimal:2', // Ensure price is required and valid
       'transaction_id' => 'required|exists:transactions,id', // Ensure transaction_id exists
       'service_id' => 'required|exists:services,id',         // Ensure service_id exists
     ]);
 
-    // Create the new service
+    // Create the new transaction service
     $transaction_service = TransactionService::create([
       'transaction_id' => $validated['transaction_id'],
       'service_id' => $validated['service_id'],
-      'price' => $validated['price'],
+      'price' => round($validated['price'], 2), // Store price with two decimal places
     ]);
 
     // Retrieve the associated transaction
     $transaction = Transaction::find($validated['transaction_id']);
 
-    // Increment the amount column
-    $transaction->amount += $transaction_service->price;
+    // Increment the amount column with two decimal places
+    $transaction->amount = round($transaction->amount + $transaction_service->price, 2);
+    $transaction->downpayment = round($transaction->amount * 0.20, 2);
 
     // Save the updated transaction
     $transaction->save();
 
-    return response()->json(['success' => true, 'amount' => $transaction->amount]);
+    return response()->json([
+      'success' => true,
+      'amount' => number_format($transaction->amount, 2, '.', ''),
+      'downpayment' => number_format($transaction->downpayment, 2, '.', '')
+    ]);
   }
 
   /**
@@ -148,8 +152,9 @@ class TransactionServiceController extends Controller
     // Retrieve the associated transaction
     $transaction = Transaction::find($transaction_service->transaction_id);
 
-    // Decrement the amount column
-    $transaction->amount -= $transaction_service->price;
+    // Decrement the amount column with two decimal places
+    $transaction->amount = round($transaction->amount - $transaction_service->price, 2);
+    $transaction->downpayment = round($transaction->amount * 0.20, 2);
 
     // Save the updated transaction
     $transaction->save();
@@ -157,6 +162,10 @@ class TransactionServiceController extends Controller
     // Delete the transaction service
     $transaction_service->delete();
 
-    return response()->json(['success' => true, 'amount' => $transaction->amount]);
+    return response()->json([
+      'success' => true,
+      'amount' => number_format($transaction->amount, 2, '.', ''),
+      'downpayment' => number_format($transaction->downpayment, 2, '.', ''),
+    ]);
   }
 }

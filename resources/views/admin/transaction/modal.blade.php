@@ -48,45 +48,10 @@
                             <input type="text" id="email" name="email"
                                 class="mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm" required>
                         </div>
-                    </div>
-
-                    <div class="font-semibold mb-4">Transaction Details</div>
-                    <div class="grid grid-cols-2 gap-2 mb-4">
-                        {{-- <div class="col-span-2">
-                            <label for="code" class="block text-sm text-gray-700">Transaction Code</label>
-                            <input type="text" id="code" name="code"
-                                class="mt-1 block w-full read-only:border-gray-300 rounded-md shadow-sm sm:text-sm" readonly>
-                        </div>
-                        <div class="">
-                            <label for="mechanic_id" class="block text-sm text-gray-700">Mechanic</label>
-                            <select id="mechanic_id" name="mechanic_id"
-                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm" required>
-                                <option value="" selected>--</option>
-                            </select>
-                        </div>
-                        <div class="">
-                            <label for="downpayment" class="block text-sm text-gray-700">Downpayment</label>
-                            <input type="number" id="downpayment" name="downpayment"
-                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm" required>
-                        </div> --}}
                         <div class="">
                             <label for="date_in" class="block text-sm text-gray-700">Date In</label>
                             <input type="datetime-local" id="date_in" name="date_in"
                                 class="mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm" required>
-                        </div>
-                        {{-- <div class="">
-                            <label for="date_out" class="block text-sm text-gray-700">Date Out</label>
-                            <input type="datetime-local" id="date_out" name="date_out"
-                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm">
-                        </div> --}}
-                        <div class="">
-                            <label for="status" class="block text-sm text-gray-700">Status</label>
-                            <select id="status" name="status"
-                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm" required>
-                                <option value="Pending" selected>Pending</option>
-                                <option value="Processing">Processing</option>
-                                <option value="Done">Done</option>
-                            </select>
                         </div>
                     </div>
                 </div>
@@ -145,23 +110,10 @@
                             <input type="text" id="edit_email" name="email"
                                 class="mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm" required>
                         </div>
-                    </div>
-
-                    <div class="font-semibold mb-4">Transaction Details</div>
-                    <div class="grid grid-cols-2 gap-2 mb-4">
                         <div class="">
                             <label for="edit_date_in" class="block text-sm text-gray-700">Date In</label>
                             <input type="datetime-local" id="edit_date_in" name="date_in"
                                 class="mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm" required>
-                        </div>
-                        <div class="">
-                            <label for="edit_status" class="block text-sm text-gray-700">Status</label>
-                            <select id="edit_status" name="status"
-                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm" required>
-                                <option value="Pending">Pending</option>
-                                <option value="Processing">Processing</option>
-                                <option value="Done">Done</option>
-                            </select>
                         </div>
                     </div>
                 </div>

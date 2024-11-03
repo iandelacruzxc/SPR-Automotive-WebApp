@@ -41,6 +41,8 @@
                                 <th class="px-6 py-3 text-left text-xs text-gray-500 uppercase tracking-wider">
                                     Date Out</th>
                                 <th class="px-6 py-3 text-left text-xs text-gray-500 uppercase tracking-wider">
+                                    Payment Status</th>
+                                <th class="px-6 py-3 text-left text-xs text-gray-500 uppercase tracking-wider">
                                     Status</th>
                                 <th class="px-6 py-3 text-left text-xs text-gray-500 uppercase tracking-wider">
                                     Actions</th>
