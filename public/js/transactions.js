@@ -3,7 +3,7 @@ $(document).ready(function () {
         paging: true,
         processing: true,
         serverSide: true,
-        order: [[6, "desc"]],
+        order: [[0, "desc"]],
         ajax: {
             url: "/transactions",
             type: "GET", // Use GET method for fetching data
@@ -21,6 +21,29 @@ $(document).ready(function () {
             { data: "amount" },
             { data: "date_in" },
             { data: "date_out" },
+            {
+                data: "payment_status",
+                render: function (data) {
+                    var statusText = "";
+                    var statusClass = "";
+
+                    if (data == "Unpaid") {
+                        statusText = "Unpaid";
+                        statusClass = "border border-red-700 text-red-700";
+                    } else if (data == "Partially Paid") {
+                        statusText = "Partially Paid";
+                        statusClass =
+                            "border border-yellow-500 text-yellow-700";
+                    } else if (data == "Paid") {
+                        statusText = "Paid";
+                        statusClass = "border border-green-700 text-green-700";
+                    } else {
+                        statusText = data;
+                        statusClass = "border border-gray-700 text-gray-700";
+                    }
+                    return `<span class="inline-block px-3 py-1 rounded-full text-xs font-semibold ${statusClass}">${statusText}</span>`;
+                },
+            },
             {
                 data: "status",
                 render: function (data) {
@@ -40,13 +63,18 @@ $(document).ready(function () {
                     return `<span class="inline-block px-3 py-1 rounded-full text-xs font-semibold ${statusClass}">${statusText}</span>`;
                 },
             },
+
             {
                 data: null,
+                orderable: false,
                 render: function (data, type, row) {
                     return `
-                      <div class="flex justify-center space-x-2">
+                      <div class="flex justify-center space-x-2 gap-1">
                           <button class="view bg-blue-500 text-white hover:bg-blue-600 px-2 py-1 rounded-md" data-id="${row.id}" title="View">
                               <i class="fas fa-eye"></i>
+                          </button>
+                          <button class="delete bg-red-500 text-white hover:bg-red-600 px-2 py-1 rounded-md" data-id="${row.id}" title="Delete">
+                              <i class="fas fa-trash"></i>
                           </button>
                       </div>
                   `;
@@ -67,8 +95,6 @@ $(document).ready(function () {
             models: ["products", "mechanics", "services"],
         },
         success: function (response) {
-            console.log(response);
-
             var mechanicId = $("#mechanic_id");
             var mechanicOptions = response.mechanics.map(function (item) {
                 // Create a new option element
@@ -115,6 +141,12 @@ $(document).ready(function () {
         },
     });
 
+    // Set selected value for payment_status
+    $("#payment_status").val($("#payment_status").data("selected"));
+
+    // Set selected value for status
+    $("#status").val($("#status").data("selected"));
+
     $("#downpayment").on("blur", function () {
         var downpaymentValue = parseFloat($(this).val());
 
@@ -128,7 +160,6 @@ $(document).ready(function () {
         // Redirect to the show page for the selected product
         window.location.href = "/transactions/" + transactionId;
     });
-
     // Handle Form Submission
     $("#createTransactionForm").on("submit", function (e) {
         e.preventDefault();
@@ -354,6 +385,16 @@ $(document).ready(function () {
 
         // Append additional data manually
         formData += "&submittal=true"; // Add submittal field
+
+        // Show loading alert
+        Swal.fire({
+            title: "Submitting...",
+            text: "Please wait while we submit the details.",
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            },
+        });
 
         $.ajaxSetup({
             headers: {

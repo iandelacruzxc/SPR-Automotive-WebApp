@@ -34,9 +34,6 @@
                         </svg>
                         Print Invoice
                     </button>
-
-
-
                 </div>
 
                 <div class="border rounded p-4 mb-4">
@@ -139,40 +136,71 @@
                     <div class="text-lg font-bold text-gray-900">Total Payable Amount <span
                             class="text-sm italic text-gray-700">(Services and Products)</span></div>
                     <div id="amount" class="text-lg font-bold text-gray-900">{{ $transaction->amount }}</div>
-                    {{-- <input type="number" id="amount" name="amount"
-                      value="{{ $transaction->amount }}"
-                      class="mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm read-only:bg-gray-100"
-                      readonly> --}}
                 </div>
-                <div class="mt-8">
+                <div class="mt-8 border rounded p-4">
                     <input type="hidden" id="initMechanicId" name="initMechanicId"
                         value="{{ $transaction->mechanic_id }}">
+                    <div class="text-lg font-bold mb-4">Transaction Details</div>
                     <form id="submitTransactionForm">
                         <input type="hidden" id="submitTransactionId" name="submitTransactionId"
                             value="{{ $transaction->id }}">
                         <div class="grid grid-cols-2 gap-2 mb-4">
                             <div class="">
                                 <label for="mechanic_id" class="block text-sm font-bold text-gray-700">Assigned
-                                    Mechanic</label>
+                                    Mechanic <span class="text-red-700">*</span></label>
                                 <select id="mechanic_id" name="mechanic_id"
                                     class="mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm" required>
                                     <option value="" selected>--</option>
                                 </select>
                             </div>
                             <div class="">
-                                <label for="date_out" class="block text-sm text-gray-700">Date Out</label>
-                                <input type="datetime-local" id="date_out" name="date_out"
-                                    value="{{ $transaction->date_out }}"
+                                <label for="estimated_completion_date" class="block text-sm text-gray-700">Estimated
+                                    Completion Date <span class="text-red-700">*</span></label>
+                                <input type="datetime-local" id="estimated_completion_date"
+                                    name="estimated_completion_date"
+                                    value="{{ $transaction->estimated_completion_date }}"
                                     class="mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm">
                             </div>
                             <div>
                                 <label for="downpayment" class="block text-sm font-bold text-gray-700">Downpayment
                                     <span class="text-red-700 text-xs italic">(Atleast 20% of Total Payable
-                                        Amount)</span></label>
+                                        Amount) *</span></label>
                                 <input type="number" step="0.1" id="downpayment" name="downpayment"
                                     value="{{ $transaction->downpayment }}"
                                     class="mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm"
-                                    min="{{ $transaction->amount * 0.2 }}" max="{{ $transaction->amount }}" required>
+                                    min="{{ $transaction->amount * 0.2 }}" max="{{ $transaction->amount }}"
+                                    required>
+                            </div>
+                            <div class="">
+                                <label for="payment_status" class="block text-sm font-bold text-gray-700">Payment
+                                    Status <span class="text-red-700">*</span></label>
+                                <select id="payment_status" name="payment_status"
+                                    data-selected="{{ $transaction->payment_status }}"
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm" required>
+                                    <option value="Unpaid">Unpaid</option>
+                                    <option value="Partially Paid">Partially Paid</option>
+                                    <option value="Paid">Paid</option>
+                                    <option value="Refunded">Refunded</option>
+                                    <option value="Cancelled">Cancelled</option>
+                                </select>
+                            </div>
+
+                            <div class="">
+                                <label for="date_out" class="block text-sm text-gray-700">Date Out</label>
+                                <input type="datetime-local" id="date_out" name="date_out"
+                                    value="{{ $transaction->date_out }}"
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm">
+                            </div>
+
+                            <div class="">
+                                <label for="status" class="block text-sm text-gray-700">Status <span
+                                        class="text-red-700">*</span></label>
+                                <select id="status" name="status" data-selected="{{ $transaction->status }}"
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm" required>
+                                    <option value="Pending">Pending</option>
+                                    <option value="Processing">Processing</option>
+                                    <option value="Done">Done</option>
+                                </select>
                             </div>
                         </div>
                         <div class="flex justify-end">

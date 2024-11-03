@@ -24,7 +24,9 @@ class Transaction extends Model
     'downpayment',
     'date_in',
     'date_out',
+    'estimated_completion_date',
     'status',
+    'payment_status',
   ];
 
   // Define relationship to User (for the user who created the transaction)
