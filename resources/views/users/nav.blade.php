@@ -13,9 +13,21 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <link rel="stylesheet" href="{{ asset('css/Datatables/datatables.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.8.0/css/pikaday.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.8.0/pikaday.js"></script>
 
     <!-- Styles -->
     <style>
+        .is-disabled {
+            color: #ccc !important;
+            /* Gray text color */
+            background-color: red !important;
+            /* Light gray background */
+            cursor: not-allowed;
+            /* Change cursor to indicate not selectable */
+        }
+
         .carousel-wrapper {
             width: 100%;
             overflow: hidden;
@@ -70,7 +82,7 @@
                 <!-- Logo Section -->
                 <div class="flex items-center">
                     <a href="#">
-                        <img src="{{ asset('images/logo.png') }}" alt="Logo" style="width: 250px; height: auto;">
+                        <img src="{{ asset('images/logo2.png') }}" alt="Logo" class="block h-9 w-auto">
                     </a>
                 </div>
                 <!-- Hamburger Menu Button -->
@@ -128,6 +140,9 @@
                             x-transition:leave-start="transform opacity-100 scale-100"
                             x-transition:leave-end="transform opacity-0 scale-95">
                             <div class="border-t border-gray-200"></div> <!-- Divider -->
+                            <div class="py=1">
+                                <a href="{{ url('/user/profile-management') }}" class="w-full text-left block px-4 py-2 text-gray-700 hover:bg-gray-100">Profile</a>
+                            </div>
                             <div class="py-1">
                                 <form action="{{ route('logout') }}" method="POST" class="inline">
                                     @csrf
@@ -138,6 +153,9 @@
                             </div>
                         </div>
                     </div>
+
+
+
 
 
 

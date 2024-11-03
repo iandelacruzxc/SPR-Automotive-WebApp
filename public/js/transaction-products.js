@@ -60,12 +60,19 @@ $(document).ready(function () {
                                 ),
                             },
                             success: function (response) {
+                                const downpayment = $("#downpayment");
                                 Swal.fire(
                                     "Deleted!",
                                     "The product has been removed.",
                                     "success"
                                 );
-                                $("#amount").val(response.amount);
+                                $("#amount").text(response.amount);
+                                downpayment.attr({
+                                    min: response.downpayment,
+                                    max: response.amount,
+                                });
+                                downpayment.val(response.downpayment);
+
                                 productTable.ajax.reload();
                             },
                             error: function (xhr) {
@@ -114,9 +121,15 @@ $(document).ready(function () {
                     text: "Product added successfully.",
                 }).then(() => {
                     // $('#createModal').addClass('hidden'); // Hide the modal
-
+                    const downpayment = $("#downpayment");
                     $("#addTransactionProductForm")[0].reset();
-                    $("#amount").val(response.amount);
+                    $("#amount").text(response.amount);
+
+                    downpayment.attr({
+                        min: response.downpayment,
+                        max: response.amount,
+                    });
+                    downpayment.val(response.downpayment);
                     // Reset the form
                     productTable.ajax.reload(); // Reload the DataTable with new data
                 });

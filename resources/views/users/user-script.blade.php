@@ -1,6 +1,8 @@
 <script src="{{ asset('js/jquery.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="{{ asset('js/Datatables/datatables.js') }}"></script>
+
+
 <script>
     $(document).ready(function() {
         let currentIndex = 0;
@@ -273,15 +275,22 @@
         fetch('/options?models[]=services')
             .then(response => response.json())
             .then(data => {
+                const serviceSelect = document.getElementById('service');
                 if (data.services) {
-                    const serviceSelect = document.getElementById('service');
                     data.services.forEach(service => {
-                        // Create a new option element
                         const option = document.createElement('option');
-                        option.value = service.id; // Use the service ID as the value
-                        option.textContent = service.name; // Display the service name
-                        serviceSelect.appendChild(option); // Append the option to the select element
+                        option.value = service.id;
+                        option.textContent = service.name;
+                        serviceSelect.appendChild(option);
                     });
+
+                    // Auto-select the service based on the query parameter
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const serviceId = urlParams.get('service_id'); // Get service_id from URL
+
+                    if (serviceId) {
+                        serviceSelect.value = serviceId; // Set the dropdown to the selected service
+                    }
                 } else {
                     console.error('No services found.');
                 }
@@ -291,5 +300,65 @@
             });
     });
 
-    
+
+    // Get the appointment dates passed from the Laravel controller
+    const appointments = @json($appointments); // Convert PHP array to JavaScript
+
+    // Convert appointments to Date objects
+    const disabledDates = appointments.map(date => moment(date).toDate());
+
+    // Populate the occupied dates table
+    const occupiedCountElement = document.getElementById('occupied-count');
+    const occupiedDatesBody = document.getElementById('occupied-dates-body');
+    const datePickerContainer = document.getElementById('datepicker-container');
+
+
+
+    // Update the occupied count
+    const occupiedCount = appointments.length;
+    // occupiedCountElement.textContent = `${occupiedCount} occupied date(s)`;
+
+    // Disable all dates if the number of occupied dates exceeds the threshold (5)
+    const disableAllDates = occupiedCount >= 5;
+
+    if (occupiedCount >= 5) {
+        // Hide the form fields but keep the notice visible
+        document.getElementById('form-container').style.display = 'none'; // Hide form fields
+    } else {
+        document.getElementById('form-container').style.display = 'flex'; // Show form fields
+    }
+
+
+const picker = new Pikaday({
+field: document.getElementById('datepicker'),
+// Disable occupied dates
+disableDayFn: function(date) {
+// Return true if disabling all dates
+
+return disabledDates.some(disabledDate =>
+date.getFullYear() === disabledDate.getFullYear() &&
+date.getMonth() === disabledDate.getMonth() &&
+date.getDate() === disabledDate.getDate()
+);
+},
+format: 'YYYY-MM-DD',
+onDraw: function() {
+const days = document.querySelectorAll('.pika-day'); // Select all day elements
+days.forEach(day => {
+const dayNumber = parseInt(day.textContent, 10); // Get the day number
+const date = new Date(this.currentYear, this.currentMonth, dayNumber); // Create a date object
+
+// Check for occupied dates
+if (disabledDates.some(disabledDate =>
+date.getFullYear() === disabledDate.getFullYear() &&
+date.getMonth() === disabledDate.getMonth() &&
+date.getDate() === disabledDate.getDate()
+)) {
+console.log(`Occupied Date Found: ${date.toLocaleDateString()}`); // Debug log
+day.classList.add('is-occupied'); // Add red styling for occupied dates
+}
+
+});
+}
+});
 </script>

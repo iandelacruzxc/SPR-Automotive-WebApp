@@ -94,7 +94,14 @@ $(document).ready(function () {
                                     "success"
                                 );
 
-                                $("#amount").val(response.amount);
+                                $("#amount").text(response.amount);
+                                const downpayment = $("#downpayment");
+
+                                downpayment.attr({
+                                    min: response.downpayment,
+                                    max: response.amount,
+                                });
+                                downpayment.val(response.downpayment);
                                 serviceTable.ajax.reload();
                             },
                             error: function (xhr) {
@@ -143,7 +150,13 @@ $(document).ready(function () {
                     text: "Service added successfully.",
                 }).then(() => {
                     $("#addTransactionServiceForm")[0].reset(); // Reset the form
-                    $("#amount").val(response.amount);
+                    $("#amount").text(response.amount);
+                    const downpayment = $("#downpayment");
+                    downpayment.attr({
+                        min: response.downpayment,
+                        max: response.amount,
+                    });
+                    downpayment.val(response.downpayment);
                     serviceTable.ajax.reload(); // Reload the DataTable with new data
                 });
             },

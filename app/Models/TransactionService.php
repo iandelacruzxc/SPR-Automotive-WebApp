@@ -13,6 +13,7 @@ class TransactionService extends Model
     'transaction_id',
     'service_id',
     'price',
+    
   ];
 
   public function service()

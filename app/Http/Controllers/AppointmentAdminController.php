@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Appointment;
 use Illuminate\Http\Request;
 use App\Mail\StatusUpdated; // Import your Mailable
+use App\Models\Transaction;
 use Illuminate\Support\Facades\Mail;
 
 class AppointmentAdminController extends Controller
@@ -21,7 +22,7 @@ class AppointmentAdminController extends Controller
             $orderDir = $request->input('order.0.dir');
 
             // Get the column names for ordering
-            $columns = ['appointment_date', 'message', 'status', 'user.name','email','user.email']; // Include user name for ordering
+            $columns = ['appointment_date', 'message', 'status', 'user.name', 'email', 'user.email']; // Include user name for ordering
 
             // Build the query
             $query = Appointment::with('user', 'service'); // Eager load the user relationship
@@ -68,18 +69,45 @@ class AppointmentAdminController extends Controller
     public function update(Request $request, $id)
     {
         $appointment = Appointment::findOrFail($id); // Find the appointment by ID
+        $transactionCode = $this->generateTransactionCode();
 
         // Update the status
         $appointment->status = $request->input('status');
         $appointment->save();
 
+
         // Send email notification based on user_id
         if ($appointment->user_id) {
             // If user_id is not null, use the user's email
+            $client_name = auth()->user()->name;
             Mail::to($appointment->user->email)->send(new StatusUpdated($appointment));
         } else {
             // If user_id is null, use the appointment's email
+            $client_name = " ";
             Mail::to($appointment->email)->send(new StatusUpdated($appointment));
+        }
+
+        $transactionData = [
+            'client_name' => $client_name,
+            'user_id' => null,
+            'unit' => ' ',
+            'code' => $transactionCode,
+            'plate_no' => ' ',
+            'color' => ' ',
+            'contact' => ' ',
+            'email' => auth()->user()->email,
+            'address' => ' ',
+            // 'mechanic_id' => 'required|numeric',
+            // 'downpayment' => 'nullable|numeric',  // Validate downpayment as numeric
+            'date_in' =>  $request->appointment_datetime,
+            // 'date_out' => 'date',
+            // 'code' => ' ',
+            'status' => 'Pending',
+        ];
+
+        // Save the transaction data only if the status is confirmed
+        if ($appointment->status === 'confirmed') {
+            Transaction::create($transactionData);
         }
 
         return response()->json(['message' => 'Status updated successfully!']);

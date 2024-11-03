@@ -90,4 +90,10 @@ class UserController extends Controller
         $cart = session()->get('cart');
         return view('users.cart', compact('cart'));
     }
+
+    public function userProfile()
+    {
+        return view('users.profile.index');
+    }
 }
+
