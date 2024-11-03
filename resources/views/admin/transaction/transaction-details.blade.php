@@ -1,7 +1,7 @@
 @php
-use Carbon\Carbon;
-// Parse the date and format it to 'F j, Y, g:i A'
-$formattedDateIn = Carbon::parse($transaction->date_in)->format('F j, Y, g:i A');
+    use Carbon\Carbon;
+    // Parse the date and format it to 'F j, Y, g:i A'
+    $formattedDateIn = Carbon::parse($transaction->date_in)->format('F j, Y, g:i A');
 @endphp
 <x-app-layout>
     <x-slot name="header">
@@ -27,7 +27,8 @@ $formattedDateIn = Carbon::parse($transaction->date_in)->format('F j, Y, g:i A')
                     </a>
                     <button onclick="window.open('/invoice/{{ $transaction->id }}', '_blank')"
                         class="inline-flex items-center bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-200">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M19 10v6a2 2 0 01-2 2H7a2 2 0 01-2-2v-6M5 10h14l1.88 6.63A2 2 0 0119 20H5a2 2 0 01-1.88-3.37L5 10zm14 0V7a5 5 0 00-5-5h-4a5 5 0 00-5 5v3" />
                         </svg>
@@ -134,7 +135,16 @@ $formattedDateIn = Carbon::parse($transaction->date_in)->format('F j, Y, g:i A')
                         </table>
                     </div>
                 </div>
-                <div class="mt-4">
+                <div class="flex items-end justify-between border-b-2 mt-4 border-gray-900">
+                    <div class="text-lg font-bold text-gray-900">Total Payable Amount <span
+                            class="text-sm italic text-gray-700">(Services and Products)</span></div>
+                    <div id="amount" class="text-lg font-bold text-gray-900">{{ $transaction->amount }}</div>
+                    {{-- <input type="number" id="amount" name="amount"
+                      value="{{ $transaction->amount }}"
+                      class="mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm read-only:bg-gray-100"
+                      readonly> --}}
+                </div>
+                <div class="mt-8">
                     <input type="hidden" id="initMechanicId" name="initMechanicId"
                         value="{{ $transaction->mechanic_id }}">
                     <form id="submitTransactionForm">
@@ -156,18 +166,13 @@ $formattedDateIn = Carbon::parse($transaction->date_in)->format('F j, Y, g:i A')
                                     class="mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm">
                             </div>
                             <div>
-                                <label for="downpayment"
-                                    class="block text-sm font-bold text-gray-700">Downpayment</label>
-                                <input type="number" id="downpayment" name="downpayment"
+                                <label for="downpayment" class="block text-sm font-bold text-gray-700">Downpayment
+                                    <span class="text-red-700 text-xs italic">(Atleast 20% of Total Payable
+                                        Amount)</span></label>
+                                <input type="number" step="0.1" id="downpayment" name="downpayment"
                                     value="{{ $transaction->downpayment }}"
                                     class="mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm"
-                                    min="0" max="{{ $transaction->amount }}" required>
-                            </div>
-                            <div>
-                                <label for="amount" class="block text-sm font-bold text-gray-700">Total</label>
-                                <input type="number" id="amount" name="amount"
-                                    value="{{ $transaction->amount }}"
-                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm" readonly>
+                                    min="{{ $transaction->amount * 0.2 }}" max="{{ $transaction->amount }}" required>
                             </div>
                         </div>
                         <div class="flex justify-end">
@@ -185,8 +190,8 @@ $formattedDateIn = Carbon::parse($transaction->date_in)->format('F j, Y, g:i A')
     @include('admin.transaction.modal')
 
     @push('scripts')
-    <script src="{{ asset('js/transactions.js') }}"></script>
-    <script src="{{ asset('js/transaction-services.js') }}"></script>
-    <script src="{{ asset('js/transaction-products.js') }}"></script>
+        <script src="{{ asset('js/transactions.js') }}"></script>
+        <script src="{{ asset('js/transaction-services.js') }}"></script>
+        <script src="{{ asset('js/transaction-products.js') }}"></script>
     @endpush
 </x-app-layout>

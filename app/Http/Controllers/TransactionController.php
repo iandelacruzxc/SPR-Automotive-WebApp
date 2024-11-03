@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\StatusUpdateMail;
+use App\Models\Mechanic;
 use Illuminate\Http\Request;
 use App\Models\Transaction;
 use Carbon\Carbon;
@@ -112,7 +113,7 @@ class TransactionController extends Controller
     return view('admin.transaction.transaction-details', compact('transaction'));
   }
 
-  
+
 
   public function store(Request $request)
   {
@@ -159,47 +160,64 @@ class TransactionController extends Controller
     ]);
     return response()->json(['success' => true]);
   }
+
   public function update(Request $request, $id)
-  {   // Fetch the transaction to update
+{
+    // Fetch the transaction to update
     $transaction = Transaction::findOrFail($id);
     $oldStatus = $transaction->status; // Store the old status
+
+    // Define the minimum and maximum downpayment requirements
+    $minDownpayment = $transaction->amount * 0.2; // Minimum downpayment is 20%
+    $maxDownpayment = $transaction->amount; // Maximum downpayment is the total amount
+
+    // Custom validation rule for mechanic status
+    $mechanicStatusRule = function ($attribute, $value, $fail) {
+        if ($value) {
+            $mechanic = Mechanic::find($value);
+            if ($mechanic && $mechanic->status === 1) {
+                return $fail('The selected mechanic must be Available.');
+            }
+        }
+    };
+
     // Check if the form is submitted to update the transaction
     if ($request['submittal'] == true) {
-      // Validate the request for submitting the transaction
-      $validatedData = $request->validate([
-        'mechanic_id' => 'nullable|numeric|exists:mechanics,id',
-        'downpayment' => 'decimal:2|nullable',
-        'date_out' => 'date|nullable',
-        // Make all other fields optional for this request
-      ]);
+        // Validate the request for submitting the transaction
+        $validatedData = $request->validate([
+            'mechanic_id' => ['nullable', 'numeric', 'exists:mechanics,id', $mechanicStatusRule],
+            'downpayment' => ['nullable', 'numeric', "min:$minDownpayment", "max:$maxDownpayment"], // Ensure downpayment is at least 20% and at most the total amount
+            'date_out' => 'date|nullable',
+            // Make all other fields optional for this request
+        ]);
 
-      // Fill only the fields that were validated
-      $transaction->fill($validatedData);
+        // Fill only the fields that were validated
+        $transaction->fill($validatedData);
     } else {
-      // Validate the request for all required fields when not submitting
-      $validatedData = $request->validate([
-        'client_name' => 'required|string',
-        'unit' => 'required|string',
-        'plate_no' => 'required|string',
-        'color' => 'required|string',
-        'contact' => 'required|string',
-        'email' => 'required|string',
-        'address' => 'required|string',
-        'downpayment' => 'decimal:2|nullable',
-        'date_in' => 'date|nullable',
-        'date_out' => 'date|nullable',
-        'status' => 'required|string',
-      ]);
+        // Validate the request for all required fields when not submitting
+        $validatedData = $request->validate([
+            'client_name' => 'required|string',
+            'unit' => 'required|string',
+            'plate_no' => 'required|string',
+            'color' => 'required|string',
+            'contact' => 'required|string',
+            'email' => 'required|string',
+            'address' => 'required|string',
+            'downpayment' => ['nullable', 'numeric', "min:$minDownpayment", "max:$maxDownpayment"], // Ensure downpayment is at least 20% and at most the total amount
+            'date_in' => 'date|nullable',
+            'date_out' => 'date|nullable',
+            'status' => 'required|string',
+            'mechanic_id' => ['nullable', 'numeric', 'exists:mechanics,id', $mechanicStatusRule, 'required_if:status,!1'], // Mechanic required if status is not 1
+        ]);
 
-
-      // Fill the transaction with validated data
-      $transaction->fill($validatedData);
+        // Fill the transaction with validated data
+        $transaction->fill($validatedData);
     }
 
     // Save the changes to the transaction
     $transaction->save();
 
-      // Check if the status has changed
+    // Check if the status has changed
     if ($oldStatus !== $transaction->status) {
         // Send email notification
         Mail::to($transaction->email)->send(new StatusUpdateMail($transaction));
@@ -207,10 +225,11 @@ class TransactionController extends Controller
 
     // Return the response
     return response()->json([
-      'transaction' => $transaction,
-      'message' => $request['submittal'] == true ? 'Transaction submitted successfully.' : 'Transaction updated successfully.'
+        'transaction' => $transaction,
+        'message' => $request['submittal'] == true ? 'Transaction submitted successfully.' : 'Transaction updated successfully.'
     ]);
-  }
+}
+
 
   public function destroy($id)
   {

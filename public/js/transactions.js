@@ -90,7 +90,7 @@ $(document).ready(function () {
                 return option;
             });
             mechanicId.append(mechanicOptions);
-            mechanicId.val($('#initMechanicId').val());
+            mechanicId.val($("#initMechanicId").val());
 
             var serviceId = $("#service_id");
             var serviceOptions = response.services.map(function (item) {
@@ -158,12 +158,23 @@ $(document).ready(function () {
                 });
             },
             error: function (xhr) {
+                var errorMessage =
+                    "Error occurred while saving the transaction.";
+                if (xhr.status === 422) {
+                    // Validation error from Laravel
+                    var errors = xhr.responseJSON.errors;
+                    errorMessage =
+                        "Validation error(s):\n" +
+                        Object.values(errors)
+                            .map(function (error) {
+                                return error[0]; // Show the first validation error for each field
+                            })
+                            .join("\n");
+                }
                 Swal.fire({
                     icon: "error",
                     title: "Error!",
-                    text:
-                        "Error occurred while saving the transaction. " +
-                        xhr.responseText,
+                    text: errorMessage,
                 });
             },
         });
@@ -279,12 +290,12 @@ $(document).ready(function () {
 
         // Show loading alert
         Swal.fire({
-            title: 'Updating...',
-            text: 'Please wait while we update the status.',
+            title: "Updating...",
+            text: "Please wait while we update the status.",
             allowOutsideClick: false,
             didOpen: () => {
                 Swal.showLoading();
-            }
+            },
         });
 
         $.ajaxSetup({
@@ -313,19 +324,27 @@ $(document).ready(function () {
                 });
             },
             error: function (xhr) {
-                // Close the loading alert
-                Swal.close();
+                var errorMessage =
+                    "Error occurred while saving the transaction.";
+                if (xhr.status === 422) {
+                    // Validation error from Laravel
+                    var errors = xhr.responseJSON.errors;
+                    errorMessage =
+                        "Validation error(s):\n" +
+                        Object.values(errors)
+                            .map(function (error) {
+                                return error[0]; // Show the first validation error for each field
+                            })
+                            .join("\n");
+                }
                 Swal.fire({
                     icon: "error",
                     title: "Error!",
-                    text: "Error occurred while saving the transaction. " + xhr.responseText,
+                    text: errorMessage,
                 });
             },
         });
     });
-
-
-
 
     $("#submitTransactionForm").on("submit", function (e) {
         e.preventDefault();
@@ -334,7 +353,7 @@ $(document).ready(function () {
         let formData = $(this).serialize(); // Serialize the form
 
         // Append additional data manually
-        formData += '&submittal=true'; // Add submittal field
+        formData += "&submittal=true"; // Add submittal field
 
         $.ajaxSetup({
             headers: {
@@ -354,15 +373,30 @@ $(document).ready(function () {
                 });
             },
             error: function (xhr) {
+                let errorTitle =
+                    "Error occurred while submitting the transaction.";
+                let errorMessage = "";
+
+                try {
+                    const response = JSON.parse(xhr.responseText);
+
+                    // If there is an 'errors' object, extract and join all messages
+                    if (response.errors) {
+                        const messages = Object.values(response.errors).flat();
+                        errorMessage = messages.join("\n");
+                    } else if (response.message) {
+                        errorMessage = response.message;
+                    }
+                } catch {
+                    errorMessage = xhr.responseText; // Fallback to raw text if parsing fails
+                }
+
                 Swal.fire({
                     icon: "error",
-                    title: "Error!",
-                    text:
-                        "Error occurred while saving the transaction. " +
-                        xhr.responseText,
+                    title: errorTitle,
+                    text: errorMessage,
                 });
             },
         });
     });
-
 });
