@@ -18,6 +18,8 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="stylesheet" href="{{ asset('css/Datatables/datatables.css') }}">
     <link rel="stylesheet" href="{{ asset('css/Sweetalert2/sweetalert2.min.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     @livewireStyles
 </head>
 
@@ -30,20 +32,20 @@
             class="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-red-500 text-white hidden">Badge</span>
         <!-- Page Heading -->
         @if (isset($header))
-            <header class="bg-white shadow">
-                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    {{ $header }}
-                </div>
-            </header>
+        <header class="bg-white shadow">
+            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                {{ $header }}
+            </div>
+        </header>
         @endif
 
         <!-- Main Banner -->
         @if (isset($banner))
-            <div class="bg-blue-500 text-white py-4">
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    {{ $banner }}
-                </div>
+        <div class="bg-blue-500 text-white py-4">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                {{ $banner }}
             </div>
+        </div>
         @endif
 
         <!-- Page Content -->
@@ -69,5 +71,3 @@
 </body>
 
 </html>
-
-

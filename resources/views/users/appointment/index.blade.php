@@ -61,10 +61,74 @@
 </div>
 
 </main>
+<script>
+    // Get the appointment dates passed from the Laravel controller
+    const appointments = @json($appointments); // Convert PHP array to JavaScript
 
+    // Convert appointments to Date objects
+    const disabledDates = appointments.map(date => moment(date).toDate());
+
+    // Populate the occupied dates table
+    const occupiedCountElement = document.getElementById('occupied-count');
+    const occupiedDatesBody = document.getElementById('occupied-dates-body');
+    const datePickerContainer = document.getElementById('datepicker-container');
+
+
+
+    // Update the occupied count
+    const occupiedCount = appointments.length;
+    // occupiedCountElement.textContent = `${occupiedCount} occupied date(s)`;
+
+    // Disable all dates if the number of occupied dates exceeds the threshold (5)
+    const disableAllDates = occupiedCount >= 5;
+
+    if (occupiedCount >= 5) {
+        // Hide the form fields but keep the notice visible
+        document.getElementById('form-container').style.display = 'none'; // Hide form fields
+    } else {
+        document.getElementById('form-container').style.display = 'flex'; // Show form fields
+    }
+
+
+    const picker = new Pikaday({
+        field: document.getElementById('datepicker'),
+        // Disable occupied dates
+        disableDayFn: function(date) {
+            // Return true if disabling all dates
+
+            return disabledDates.some(disabledDate =>
+                date.getFullYear() === disabledDate.getFullYear() &&
+                date.getMonth() === disabledDate.getMonth() &&
+                date.getDate() === disabledDate.getDate()
+            );
+        },
+        format: 'YYYY-MM-DD',
+        onDraw: function() {
+            const days = document.querySelectorAll('.pika-day'); // Select all day elements
+            days.forEach(day => {
+                const dayNumber = parseInt(day.textContent, 10); // Get the day number
+                const date = new Date(this.currentYear, this.currentMonth, dayNumber); // Create a date object
+
+                // Check for occupied dates
+                if (disabledDates.some(disabledDate =>
+                        date.getFullYear() === disabledDate.getFullYear() &&
+                        date.getMonth() === disabledDate.getMonth() &&
+                        date.getDate() === disabledDate.getDate()
+                    )) {
+                    console.log(`Occupied Date Found: ${date.toLocaleDateString()}`); // Debug log
+                    day.classList.add('is-occupied'); // Add red styling for occupied dates
+                }
+
+            });
+        }
+    });
+</script>
 @include('users.user-script')
 
 
-</body>
 
-</html>
+<
+    /body>
+
+    <
+        /html>
