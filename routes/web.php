@@ -52,6 +52,8 @@ Route::post('/admin/register', [RegisterController::class, 'registerAdmin']);
 
 Route::middleware(['auth'])->group(function () {
   Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+  Route::get('/dashboard/data', [DashboardController::class, 'fetchChartData'])->name('dashboard.data');
+
   Route::get('/services-management', [ServiceManagementController::class, 'index'])->name('admin.service-management');
   Route::get('/services/data', [ServiceManagementController::class, 'getData']);
   Route::resource('services', ServiceManagementController::class)->except(['create', 'edit']);
@@ -74,7 +76,7 @@ Route::middleware(['auth'])->group(function () {
   Route::get('/test-invoice', function () {
     $transaction = \App\Models\Transaction::with(['products', 'services'])->first();
     return view('invoice.invoice', compact('transaction'));
-});
+  });
 
 
 
@@ -97,5 +99,4 @@ Route::middleware(['auth'])->group(function () {
   Route::resource('user/appointment', AppointmentController::class)->except(['create', 'edit']);
   Route::get('/user/appointment-history', [AppointmentController::class, 'history'])->name('user.history');
   Route::get('/check-appointment', [AppointmentController::class, 'checkAppointment']);
-
 });
