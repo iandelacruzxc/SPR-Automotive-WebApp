@@ -14,7 +14,7 @@ class ProductManagementController extends Controller
  public function index(Request $request)
 {
 
-    if (!auth()->user()->hasRole('admin')) {
+    if (!auth()->user()->hasRole(['admin','staff'])) {
         abort(403, 'Unauthorized action.');
       }
 

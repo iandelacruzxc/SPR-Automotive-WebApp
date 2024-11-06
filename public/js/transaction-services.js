@@ -12,16 +12,21 @@ $(document).ready(function () {
             { data: "name" },
             { data: "price", orderable: false },
             {
-                data: null,
-                orderable: false,
-                defaultContent: `
+                "data": null,
+                "render": function (data, type, row) {
+                    if (window.userRole !== 'staff') {
+                        return `
                   <div class="flex space-x-2">
                       <button class="delete text-red-600 hover:text-red-800" title="Delete">
                           <i class="fas fa-trash-alt"></i>
                       </button>
                   </div>
-              `,
-            },
+              `;
+                    } else {
+                        return '';  // Return empty content if role is 'staff'
+                    }
+                }
+            }
         ],
         pageLength: 10, // Set default page length
         lengthMenu: [

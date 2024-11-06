@@ -1,4 +1,6 @@
-$(document).ready(function() {
+$(document).ready(function () {
+    console.log(window.userRole);
+
     var table = $('#example').DataTable({
         "paging": true,
         "processing": true,
@@ -14,12 +16,12 @@ $(document).ready(function() {
             { "data": "name" },
             { "data": "description" },
             { "data": "price" },
-            { 
-                "data": "status", 
+            {
+                "data": "status",
                 "render": function (data) {
                     var statusText = '';
                     var statusClass = '';
-            
+
                     if (data == 1) {
                         statusText = 'Active';
                         statusClass = 'bg-green-500 text-white border border-green-700'; // Tailwind class for green background with a border
@@ -27,53 +29,53 @@ $(document).ready(function() {
                         statusText = 'Inactive';
                         statusClass = 'bg-red-500 text-white border border-red-700'; // Tailwind class for red background with a border
                     }
-            
+
                     return `<span class="inline-block px-3 py-1 rounded-full text-xs font-semibold ${statusClass}">${statusText}</span>`;
                 }
             },
-            
-            
-            { "data": null, 
-                "defaultContent": `
-                    <div class="flex space-x-2">
-                        <button class="view text-gray-500 hover:text-gray-700 mr-2" title="View">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <button class="edit text-green-500 hover:text-gray-700 mr-2" title="Edit">
-                            <i class="fas fa-pencil-alt"></i>
-                        </button>
-                        <button class="delete text-red-600 hover:text-red-800" title="Delete">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                    </div>
-                `
+            {
+                "data": null,
+                "render": function (data, type, row) {
+                    if (window.userRole !== 'staff') {
+                        return `
+                            <div class="flex space-x-2">
+                                <button class="view text-gray-500 hover:text-gray-700 mr-2" title="View">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="edit text-green-500 hover:text-gray-700 mr-2" title="Edit">
+                                    <i class="fas fa-pencil-alt"></i>
+                                </button>
+                                <button class="delete text-red-600 hover:text-red-800" title="Delete">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        `;
+                    } else {
+                        return `
+                        <div class="flex space-x-2">
+                            <button class="view text-gray-500 hover:text-gray-700 mr-2" title="View">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    `;  // Return empty content if role is 'staff'
+                    }
+                }
             }
-        ], 
+        ],
         "pageLength": 10, // Set default page length
-        "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ] // Page length options
+        "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]] // Page length options
     });
 
     // Handle Form Submission
-    $('#createServiceForm').on('submit', function(e) {
+    $('#createServiceForm').on('submit', function (e) {
         e.preventDefault();
-    
-        // var formData = $(this).serialize();
-        // var serviceId = $('#serviceId').val();
-        // var url = serviceId ? '/services/update/' + serviceId : '/services';
-        // var method = serviceId ? 'PUT' : 'POST';
-    
-        // $.ajaxSetup({
-        //     headers: {
-        //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        //     }
-        // });
 
         var serviceId = $('#serviceId').val();
         var url = serviceId ? '/services/' + serviceId : '/services'; // URL for update or create
         var method = serviceId ? 'POST' : 'POST'; // Using POST; _method will handle it
-        
+
         var formData = new FormData(this); // Using FormData to include files
-    
+
         if (serviceId) {
             formData.append('_method', 'PUT'); // Laravel requires this for PUT requests
         }
@@ -83,7 +85,7 @@ $(document).ready(function() {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-    
+
 
         $.ajax({
             url: url,
@@ -91,7 +93,7 @@ $(document).ready(function() {
             data: formData,
             contentType: false, // Prevent jQuery from setting the content-type header
             processData: false, // Prevent jQuery from processing the data
-            success: function(response) {
+            success: function (response) {
                 $('#createModal').addClass('hidden');
                 Swal.fire({
                     icon: 'success',
@@ -104,7 +106,7 @@ $(document).ready(function() {
                 });
 
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error!',
@@ -113,10 +115,10 @@ $(document).ready(function() {
             }
         });
     });
-    
+
 
     // Handle Create Button Click
-    $('#createButton').on('click', function() {
+    $('#createButton').on('click', function () {
         $('#createModal').removeClass('hidden');
         $('#modalTitle').text('Create Service');
         $('#serviceId').val(''); // Clear ID for new service
@@ -124,14 +126,14 @@ $(document).ready(function() {
     });
 
     // Handle Close Modal Click
-    $('#closeModal').on('click', function() {
+    $('#closeModal').on('click', function () {
         $('#createModal').addClass('hidden');
     });
 
     // Handle view button click
     // $('#example').on('click', '.view', function() {
     //     var rowData = table.row($(this).parents('tr')).data();
-       
+
     //     // Populate the modal with data
     //     $('#serviceDetails').html(`
     //         <p><strong>Name:</strong> ${rowData.name}</p>
@@ -139,18 +141,18 @@ $(document).ready(function() {
     //         <p><strong>Price:</strong> ${rowData.price}</p>
     //         <p><strong>Status:</strong> ${rowData.status ? 'Active' : 'Inactive'}</p>
     //     `);
-       
+
     //     // Show the modal
     //     $('#viewModal').removeClass('hidden');
     // });
 
     // Close the view modal
-    $('#closeViewModal').on('click', function() {
+    $('#closeViewModal').on('click', function () {
         $('#viewModal').addClass('hidden');
     });
 
     // Click outside to close open menus and modals
-    $(document).on('click', function(e) {
+    $(document).on('click', function (e) {
         if (!$(e.target).closest('.view, .action-button').length) {
             $('.action-menu').addClass('hidden');
             $('#viewModal').addClass('hidden');
@@ -158,12 +160,12 @@ $(document).ready(function() {
     });
 
     // Handle action button clicks
-    $('#example').on('click', 'button', function(e) {
+    $('#example').on('click', 'button', function (e) {
         e.preventDefault();
         var action = $(this).attr('class');
         var rowData = table.row($(this).parents('tr')).data();
 
-        switch(true) {
+        switch (true) {
             case action.includes('view'):
                 $('#serviceDetails').html(`
                     <p><strong>Name:</strong> ${rowData.name}</p>
@@ -201,7 +203,7 @@ $(document).ready(function() {
                             data: {
                                 _token: $('meta[name="csrf-token"]').attr('content')
                             },
-                            success: function(response) {
+                            success: function (response) {
                                 Swal.fire(
                                     'Deleted!',
                                     'The service has been deleted.',
@@ -209,7 +211,7 @@ $(document).ready(function() {
                                 );
                                 table.ajax.reload(); // Reload DataTable
                             },
-                            error: function(xhr) {
+                            error: function (xhr) {
                                 Swal.fire(
                                     'Error!',
                                     'There was an issue deleting the service.',

@@ -24,13 +24,19 @@ $(document).ready(function () {
             { data: "email" },
             {
                 "data": null,
-                "defaultContent": `
+                "render": function (data, type, row) {
+                    if (window.userRole !== 'staff') {
+                        return `
                     <div class="flex space-x-2">
                         <button class="delete text-red-600 hover:text-red-800" title="Delete">
                             <i class="fas fa-trash-alt"></i>
                         </button>
                     </div>
-                `
+                `;
+                    } else {
+                        return '';  // Return empty content if role is 'staff'
+                    }
+                }
             }
 
         ],
@@ -51,7 +57,7 @@ $(document).ready(function () {
         var rowData = table.row($(this).parents('tr')).data();
         console.log(rowData); // Check if data is retrieved correctly
         switch (true) {
-     
+
             case action.includes('delete'):
                 // SweetAlert2 confirmation
                 Swal.fire({

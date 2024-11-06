@@ -34,10 +34,10 @@ class AuthenticatedSessionController extends Controller
             // If the email is verified, regenerate the session and redirect based on role
             $request->session()->regenerate();
 
-            if (Auth::user()->hasRole('admin')) {
-                return redirect()->route('dashboard'); // Change to your admin route
+            if (Auth::user()->hasRole(['admin', 'staff'])) {
+                return redirect()->route('dashboard'); // Redirect for both admin and staff
             } else {
-                return redirect()->route('user.dashboard'); // Correct usage
+                return redirect()->route('user.dashboard'); // Redirect for regular users
             }
         }
 

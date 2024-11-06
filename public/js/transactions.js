@@ -63,23 +63,33 @@ $(document).ready(function () {
                     return `<span class="inline-block px-3 py-1 rounded-full text-xs font-semibold ${statusClass}">${statusText}</span>`;
                 },
             },
-
             {
-                data: null,
-                orderable: false,
-                render: function (data, type, row) {
-                    return `
-                      <div class="flex justify-center space-x-2 gap-1">
-                          <button class="view bg-blue-500 text-white hover:bg-blue-600 px-2 py-1 rounded-md" data-id="${row.id}" title="View">
-                              <i class="fas fa-eye"></i>
-                          </button>
-                          <button class="delete bg-red-500 text-white hover:bg-red-600 px-2 py-1 rounded-md" data-id="${row.id}" title="Delete">
-                              <i class="fas fa-trash"></i>
-                          </button>
-                      </div>
-                  `;
-                },
-            },
+                "data": null,
+                "render": function (data, type, row) {
+                    if (window.userRole !== 'staff') {
+                        return `
+                        <div class="flex justify-center space-x-2 gap-1">
+                            <button class="view bg-blue-500 text-white hover:bg-blue-600 px-2 py-1 rounded-md" data-id="${row.id}" title="View">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="delete bg-red-500 text-white hover:bg-red-600 px-2 py-1 rounded-md" data-id="${row.id}" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                    } else {
+                        return `
+                            <div class="flex justify-center space-x-2 gap-1">
+                              <button class="view bg-blue-500 text-white hover:bg-blue-600 px-2 py-1 rounded-md" data-id="${row.id}" title="View">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            </div>
+                        `;  // Return empty content if role is 'staff'
+                    }
+                }
+            }
+
+
         ],
         pageLength: 10, // Set default page length
         lengthMenu: [
