@@ -50,6 +50,9 @@ Route::get('/admin/register', [RegisterController::class, 'create'])->name('admi
 Route::post('/admin/register', [RegisterController::class, 'registerAdmin']);
 
 
+Route::get('/staff/register', [RegisterController::class, 'regformStaff'])->name('staff.register');
+Route::post('/staff/register', [RegisterController::class, 'registerstaff']);
+
 Route::middleware(['auth'])->group(function () {
   Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
   Route::get('/dashboard/data', [DashboardController::class, 'fetchChartData'])->name('dashboard.data');

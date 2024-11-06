@@ -41,7 +41,7 @@ class RegisterController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-        
+
         ]);
 
         Mail::to($user->email)->send(new VerifyEmail($user));
@@ -91,10 +91,40 @@ class RegisterController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-        
+
         ]);
 
         $user->assignRole('admin'); // Default role for all registered users
+
+        Mail::to($user->email)->send(new VerifyEmail($user));
+
+        return redirect()->route('login')->with('success', 'Registration successful! Please login.');
+    }
+
+
+
+    public function regformStaff()
+    {
+        return view('auth.staff-register');
+    }
+
+
+    public function registerstaff(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            // 'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+
+        ]);
+
+        $user->assignRole('staff'); // Default role for all registered users
 
         Mail::to($user->email)->send(new VerifyEmail($user));
 

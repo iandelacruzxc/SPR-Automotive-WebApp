@@ -10,6 +10,9 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white shadow-sm rounded-lg p-6">
+                @if(Auth::user()->hasRole('staff'))
+                <!-- Hide the Actions header if the user is a staff -->
+                @else
                 <!-- Create Button with Icon -->
                 <div class="flex justify-end mb-4">
                     <button id="createButton"
@@ -19,6 +22,7 @@
                         {{ __('Create') }}
                     </button>
                 </div>
+                @endif
                 <!-- Table -->
                 <div class="overflow-x-auto">
                     <table id="example" class="min-w-full divide-y divide-gray-200">
@@ -57,9 +61,13 @@
         </div>
     </div>
 
+    <script>
+        window.userRole = "{{ Auth::user()->getRoleNames()->first() }}";
+    </script>
+
     @include('admin.transaction.modal')
 
     @push('scripts')
-        <script src="{{ asset('js/transactions.js') }}"></script>
+    <script src="{{ asset('js/transactions.js') }}"></script>
     @endpush
 </x-app-layout>

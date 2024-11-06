@@ -51,19 +51,31 @@ $(document).ready(function () {
 
             {
                 "data": null,
-                "defaultContent": `
-                    <div class="flex space-x-2">
-                        <button class="view text-gray-500 hover:text-gray-700 mr-2" title="View">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <button class="edit text-green-500 hover:text-gray-700 mr-2" title="Edit">
-                            <i class="fas fa-pencil-alt"></i>
-                        </button>
-                        <button class="delete text-red-600 hover:text-red-800" title="Delete">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                    </div>
-                `
+                "render": function (data, type, row) {
+                    if (window.userRole !== 'staff') {
+                        return `
+                            <div class="flex space-x-2">
+                                <button class="view text-gray-500 hover:text-gray-700 mr-2" title="View">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="edit text-green-500 hover:text-gray-700 mr-2" title="Edit">
+                                    <i class="fas fa-pencil-alt"></i>
+                                </button>
+                                <button class="delete text-red-600 hover:text-red-800" title="Delete">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        `;
+                    } else {
+                        return `
+                            <div class="flex space-x-2">
+                                <button class="view text-gray-500 hover:text-gray-700 mr-2" title="View">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        `;  // Return empty content if role is 'staff'
+                    }
+                }
             }
         ],
         "pageLength": 10, // Set default page length
