@@ -7,12 +7,15 @@
 
     @include('admin.product-management.style')
 
-                      <!-- <span class="bg-red-700 text-white border border-red-700">121</span>// Updated Tailwind class for red background with a border -->
+    <!-- <span class="bg-red-700 text-white border border-red-700">121</span>// Updated Tailwind class for red background with a border -->
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white shadow-sm rounded-lg p-6">
                 <!-- Create Button with Icon -->
+                @if(Auth::user()->hasRole('staff'))
+                <!-- Hide the Actions header if the user is a staff -->
+                @else
                 <div class="flex justify-end mb-4">
                     <button id="createButton" class="bg-blue-500 text-white px-4 py-2 rounded-md flex items-center hover:bg-blue-600">
                         <!-- Font Awesome Plus Icon -->
@@ -20,11 +23,12 @@
                         {{ __('Create') }}
                     </button>
                 </div>
+                @endif
                 <!-- Table -->
                 <div class="overflow-x-auto">
                     <table id="example" class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
-                            
+
                             <tr>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
                                 <!-- <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date Created</th> -->
@@ -42,36 +46,37 @@
                 </div>
             </div>
         </div>
-    </div>  
+    </div>
 
     @include('admin.product-management.modal')
-
+    <script>
+        window.userRole = "{{ Auth::user()->getRoleNames()->first() }}";
+    </script>
 
     @push('scripts')
-        <script src="{{ asset('js/product-management.js') }}"></script>
-        <script>
-       function previewImage(event) {
-        const file = event.target.files[0];
-        const preview = document.getElementById('imagePreview');
+    <script src="{{ asset('js/product-management.js') }}"></script>
+    <script>
+        function previewImage(event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('imagePreview');
 
-        if (!file) {
-            // No file selected, ensure the preview is hidden
-            preview.src = '';
-            preview.classList.add('hidden');
-            return;
+            if (!file) {
+                // No file selected, ensure the preview is hidden
+                preview.src = '';
+                preview.classList.add('hidden');
+                return;
+            }
+
+            const reader = new FileReader();
+
+            reader.onload = function() {
+                preview.src = reader.result;
+                preview.classList.remove('hidden');
+            };
+
+            reader.readAsDataURL(file);
         }
-
-        const reader = new FileReader();
-        
-        reader.onload = function () {
-            preview.src = reader.result;
-            preview.classList.remove('hidden');
-        };
-        
-        reader.readAsDataURL(file);
-    }
-
-      </script>
+    </script>
     @endpush
 
 

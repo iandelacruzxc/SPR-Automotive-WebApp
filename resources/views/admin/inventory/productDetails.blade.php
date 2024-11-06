@@ -22,12 +22,18 @@
                     </a>
                     <!-- <button id="addStocksButton" class="inline-block bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600">Add Stocks</button> -->
                     <!-- Create Button with Icon -->
+                    @if(Auth::user()->hasRole('staff'))
+                    <!-- Hide the Actions header if the user is a staff -->
+                    @else
                     <button id="createButton"
                         class="inline-block bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600"
                         data-product-id="{{ $product->id }}">
                         <i class="fas fa-plus mr-2"></i>
                         {{ __('Add Stocks') }}
                     </button>
+                    @endif
+
+
                 </div>
                 <h3 class="text-lg font-semibold mb-4">Product Overview</h3>
                 <div class="flex flex-col md:flex-row gap-4">
@@ -51,27 +57,32 @@
                                     <tr>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Product Name:</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {{ $product->name }}</td>
+                                            {{ $product->name }}
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Description</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {{ $product->description }}</td>
+                                            {{ $product->description }}
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Price</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {{ $product->price }}</td>
+                                            {{ $product->price }}
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Stocks</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {{ optional($product->inventory)->quantity ?? '0' }}</td>
+                                            {{ optional($product->inventory)->quantity ?? '0' }}
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Sold</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {{ $product->price }}</td>
+                                            {{ $product->price }}
+                                        </td>
                                     </tr>
                                     <!-- Additional Stock Records can be added here -->
                                 </tbody>
@@ -107,6 +118,6 @@
     @include('admin.inventory.modal')
 
     @push('scripts')
-        <script src="{{ asset('js/inventory.js') }}"></script>
+    <script src="{{ asset('js/inventory.js') }}"></script>
     @endpush
 </x-app-layout>

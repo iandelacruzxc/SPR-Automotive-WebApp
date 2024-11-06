@@ -10,7 +10,7 @@ class MechanicController extends Controller
   public function index()
   {
 
-    if (!auth()->user()->hasRole('admin')) {
+    if (!auth()->user()->hasRole(['admin','staff'])) {
       abort(403, 'Unauthorized action.');
     }
 
