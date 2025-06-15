@@ -82,7 +82,7 @@ class TransactionController extends Controller
             'mechanic' => $mechanicFullName,
             'mechanic_id' => $transaction->mechanic_id,
             'downpayment' => $transaction->downpayment,
-            'balance' =>  $transaction->payment_status == 'Paid' ? 0 : $transaction->amount - $transaction->downpayment,
+            'balance' => $transaction->payment_status == 'Paid' ? 0 : $transaction->amount - $transaction->downpayment,
             'amount' => $transaction->amount,
             'date_in' => $transaction->date_in,
             'date_out' => $transaction->date_out ? $transaction->date_out : "--",
@@ -118,7 +118,7 @@ class TransactionController extends Controller
       'date_in' => 'date',
       // 'status' => 'required|string',
     ]);
-    
+
     // Create the new Transaction
     $transaction = Transaction::create([
       'user_id' => Auth::user()->id,
@@ -144,9 +144,10 @@ class TransactionController extends Controller
     $transaction = Transaction::findOrFail($id);
     $oldStatus = $transaction->status; // Store the old status
 
-    // Define the minimum and maximum downpayment requirements
-    $minDownpayment = $transaction->amount * 0.2; // Minimum downpayment is 20%
-    $maxDownpayment = $transaction->amount; // Maximum downpayment is the total amount
+    // Safely handle null amounts
+    $amount = $transaction->amount ?? 0;
+    $minDownpayment = $amount * 0.2;
+    $maxDownpayment = $amount;
 
     // Custom validation rule for mechanic status
     $mechanicStatusRule = function ($attribute, $value, $fail) {
@@ -160,15 +161,21 @@ class TransactionController extends Controller
 
     // Check if the form is submitted to update the transaction
     if ($request['submittal'] == true) {
-      // Validate the request for submitting the transaction
+      // Dynamically create downpayment rules
+      $downpaymentRules = ['nullable', 'numeric'];
+      if ($amount > 0) {
+        $downpaymentRules[] = "min:$minDownpayment";
+        $downpaymentRules[] = "max:$maxDownpayment";
+      }
+
+      // Validate the request
       $validatedData = $request->validate([
         'mechanic_id' => ['nullable', 'numeric', 'exists:mechanics,id', $mechanicStatusRule],
-        'downpayment' => ['nullable', 'numeric', "min:$minDownpayment", "max:$maxDownpayment"], // Ensure downpayment is at least 20% and at most the total amount
+        'downpayment' => $downpaymentRules,
         'date_out' => 'date|nullable',
         'estimated_completion_date' => 'date|required',
         'payment_status' => 'required|string',
         'status' => 'required|string',
-        // Make all other fields optional for this request
       ]);
 
       // Fill only the fields that were validated
@@ -195,7 +202,6 @@ class TransactionController extends Controller
 
     // Check if the status has changed
     if ($oldStatus !== $transaction->status) {
-      // Send email notification
       Mail::to($transaction->email)->send(new StatusUpdateMail($transaction));
     }
 
@@ -205,6 +211,7 @@ class TransactionController extends Controller
       'message' => $request['submittal'] == true ? 'Transaction submitted successfully.' : 'Transaction updated successfully.'
     ]);
   }
+
 
 
   public function destroy($id)
@@ -226,7 +233,7 @@ class TransactionController extends Controller
 
     // Determine the next sequence number
     if ($lastTransaction) {
-      $lastSequence = (int)substr($lastTransaction->code, -3); // Get last 'xxx'
+      $lastSequence = (int) substr($lastTransaction->code, -3); // Get last 'xxx'
       $nextSequence = str_pad($lastSequence + 1, 3, '0', STR_PAD_LEFT); // Increment and pad with zeroes
     } else {
       $nextSequence = '001'; // Start with '001' if no transactions for today

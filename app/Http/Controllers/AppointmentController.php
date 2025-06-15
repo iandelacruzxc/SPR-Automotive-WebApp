@@ -19,7 +19,7 @@ class AppointmentController extends Controller
             $appointments = Appointment::where('status', 'confirmed')
                 ->pluck('appointment_date')
                 ->map(function ($date) {
-                    return \Carbon\Carbon::parse($date)->format('Y-m-d');
+                    return Carbon::parse($date)->format('Y-m-d');
                 });
 
         return view('users.appointment.index', compact('appointments'));
